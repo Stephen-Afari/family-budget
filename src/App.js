@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { SplitScreen } from "./components/splitScreen/splitScreen";
+import { Routes, Route } from "react-router-dom";
+import { Navigation } from "./routes/home/navigation/navigation.component";
+import { MySplitScreen } from "./routes/myScreen/myScreen";
+
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+<Routes>
+  <Route path="/" element={<Navigation/>}> 
+<Route path='budget' element={<MySplitScreen/>}/>
+<Route path='budget/trxns' element={<MySplitScreen/>}/>
+<Route path='transactions' element={<MySplitScreen/>}/>
+<Route path='account' element={<MySplitScreen/>}/>
+<Route path='dashboard' element={<MySplitScreen/>}/>
+<Route path='investment' element={<MySplitScreen/>}/>
+<Route path='insight' element={<MySplitScreen/>}/>
+<Route path='export' element={<MySplitScreen/>}/>
+<Route path='logIn' element={<MySplitScreen/>}/>
+  </Route>
+</Routes>
   );
 }
 
