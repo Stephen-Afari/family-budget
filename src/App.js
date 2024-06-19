@@ -1,23 +1,27 @@
 import { SplitScreen } from "./components/splitScreen/splitScreen";
 import { Routes, Route } from "react-router-dom";
 import { Navigation } from "./routes/home/navigation/navigation.component";
-import { MySplitScreen } from "./routes/myScreen/myScreen";
-
-
+import { MyBudgetScreen } from "./routes/budget/myBudget";
+import { MyTransactionScreen } from "./routes/transactions/transactions";
+import { MyAccountScreen } from "./routes/account/myAccount";
+import { MyDashBoardScreen } from "./routes/dashboard/myDashboard";
+import { MyInvestmentScreen } from "./routes/investment/myInvestment";
+import { MyInsightScreen } from "./routes/insight/myInsight";
+import { MyExportScreen } from "./routes/export/myExport";
+import { MyLogInScreen } from "./routes/logIn/logIn";
 
 function App() {
   return (
 <Routes>
   <Route path="/" element={<Navigation/>}> 
-<Route path='budget' element={<MySplitScreen/>}/>
-<Route path='budget/trxns' element={<MySplitScreen/>}/>
-<Route path='transactions' element={<MySplitScreen/>}/>
-<Route path='account' element={<MySplitScreen/>}/>
-<Route path='dashboard' element={<MySplitScreen/>}/>
-<Route path='investment' element={<MySplitScreen/>}/>
-<Route path='insight' element={<MySplitScreen/>}/>
-<Route path='export' element={<MySplitScreen/>}/>
-<Route path='logIn' element={<MySplitScreen/>}/>
+<Route path='budget' element={<MyBudgetScreen/>}/>
+<Route path='transactions' element={<MyTransactionScreen/>}/>
+<Route path='account' element={<MyAccountScreen/>}/>
+<Route path='dashboard' element={<MyDashBoardScreen/>}/>
+<Route path='investment' element={<MyInvestmentScreen/>}/>
+<Route path='insight' element={<MyInsightScreen/>}/>
+<Route path='export' element={<MyExportScreen/>}/>
+<Route path='logIn' element={<MyLogInScreen/>}/>
   </Route>
 </Routes>
   );
