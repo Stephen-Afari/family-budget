@@ -3,11 +3,41 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiCircleRemove } from "react-icons/ci";
 
+export const MyTable= styled.table`
+width: 100%;
+
+`
+
 export const TableData = styled.td`
-font-size:15px;
+font-size:13px;
 // padding: 10px;
   position: relative; // Ensure positioning context for RemoveSymbol
 
+  &:nth-child(1){
+    padding-right: 60px; // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(2){
+    padding-left: 60px;  // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(n+3){
+    padding-left:10px; padding-left: 5px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  }
+`
+export const TableData1 = styled.td`
+padding-right:10px;
+font-size:10px;
+// padding: 10px;
+  position: relative; // Ensure positioning context for RemoveSymbol
+
+  &:nth-child(1){
+    padding-right: 60px; // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(2){
+    padding-left: 60px;  // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(n+3){
+    padding-left:10px; padding-left: 5px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  }
 `
 
 export const RemoveSymbol = styled(CiCircleRemove)`
@@ -22,6 +52,7 @@ visibility: hidden;
   }
 
 `
+//styling for a React Icon.
 export const AddSymbol= styled(IoIosAddCircleOutline)`
 font-size:20px;
 margin-left: 6px;
@@ -81,6 +112,7 @@ justify-content: space-between;
 &:first-child {
     background-color:#EEF7FF;
 }
+//from the second child onwards (ie. n starts from zero)
 &:nth-child(n+2){
     border-bottom: 1px solid #ddd;
 }
@@ -88,13 +120,23 @@ margin-bottom: 5px;
 `
 
 export const TableHead = styled.th`
+padding-left:15px;
 height:20px;
 color: #686D76;
   text-align: left;
+  &:nth-child(1){
+    padding-right: 50px; // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(2){
+    padding-left: 50px;  // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(n+3){
+    padding-left:10px; padding-left: 10px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  }
 `
 
 export const TableContainer=styled.div`
-width:395px;
+width:460px;
 // max-width: 200px;
 overflow-x: auto;
 border-radius: 8px;
