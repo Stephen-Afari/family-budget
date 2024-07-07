@@ -60,7 +60,7 @@ const incomes=[
     const dispatch = useDispatch();
  
       //interact with the data from the reducer
-  const myBudgetTransaction = useSelector(selectBudgettransactions);
+  const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
   const totalIncome = useSelector(selectIncomeTotal);
   
 //     // a function to handle the dispatch
@@ -69,14 +69,6 @@ const incomes=[
 //     dispatch(addItemToBudget(objectToAdd))
 // }
 
- //////////////////////SEND DATA TO REDUCER///////////////////////////////
-    // a function to handle the dispatch
-    const handleAddTransactions = ()=>{
-      let objectToAdd =  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200}
-        dispatch(addItemToBudget(objectToAdd))
-    }
-
- /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
  ////////////MODAL DETAILS///////////////////////////////
  const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,25 +78,36 @@ const incomes=[
  const handleCloseModal = () => setIsModalOpen(false);
  const expenseHeader='Add Expense'
 
+
+ //////////////////////SEND DATA TO REDUCER///////////////////////////////
+    // a function to handle the dispatch
+    // function handleAddTransactions(){
+    //   //let objectToAdd =  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200}
+    //     dispatch(addItemToBudget(collectedData))
+    // }
+
+ /////////////////////SEND DATA TO REDUCER////////////////////////////////
+
  const handleFormSubmit = (data) => {
   let dataWithId = {...data, id:idCounter++};
    setCollectedData(dataWithId);
-   handleAddTransactions()
+   dispatch(addItemToBudget(dataWithId))
   
  };
  //console.log('Collected Data:', collectedData); // You can process the data further here
  /////////////////////////////MODAL DETALS//////////////////
- console.log(myBudgetTransaction);
+ //console.log(collectedData);
 
 //console.log(myBudgetTransaction);
 // console.log(totalIncome);
+ 
+// //filtering to show data for the selected date only 
+const filteredTransactions = selectedDate ?
+myBudgetTransaction.filter((transaction)=>{
+    return new Date(transaction.date).toString()===selectedDate.toString();
    
-    //filtering to show data for the selected date only 
-    const filteredTransactions = selectedDate ?
-    transactions.filter((transaction)=>{
-        return new Date(transaction.date).toString()===selectedDate.toString();
-       
-      }):[];
+  }):[];
+
      //filtering to show data for the selected date only 
      const filteredIncome = selectedDate ? (
       incomes.filter((income)=>{
@@ -124,6 +127,7 @@ const incomes=[
       <MyMiddleComponent >
 <TableContainer>
       <MyTable>
+        <thead>
         <TableRow>
             <TableHead>Income</TableHead>
             
@@ -131,7 +135,10 @@ const incomes=[
             <TableHead>(%)</TableHead>
             <TableHead>Targ.</TableHead>
         </TableRow>
+        </thead>
+        <tbody>
       {filteredIncome.length >0 ? (
+       
       filteredIncome.map((income)=>(
        <TableRow key={income.id}>
         
@@ -144,13 +151,15 @@ const incomes=[
         </TableRow>
 
    ))):(<div>No Transaction selected for this date</div>)}
+   </tbody>
    </MyTable>
    
-   <AddSymbol onClick={handleAddTransactions} />
+   <AddSymbol />
 </TableContainer>
 
 <TableContainer>
       <MyTable>
+        <thead>
         <TableRow>
             <TableHead>Expense</TableHead>
             
@@ -158,6 +167,9 @@ const incomes=[
             <TableHead>(%)</TableHead>
             <TableHead>Targ.</TableHead>
         </TableRow>
+        </thead>
+      <tbody>
+    
       {filteredTransactions.length >0 ?
       (filteredTransactions.map((transaction)=>(
         <TableRow key={transaction.id}>
@@ -172,7 +184,7 @@ const incomes=[
         
         
       ))):(<div>No Transaction selected for this date</div>)}
-    
+    </tbody>
     </MyTable>
     <AddSymbol onClick={handleOpenModal}/>
     </TableContainer>

@@ -8,8 +8,8 @@ export const Modal = ({isOpen,onClose, onSubmit, heading,subGroups,parents})=>{
 //state
 const [formData, setFormData]= useState({
     date: '',
-    selectedsubGroup:'', //Default to the first item in the dropdown
-    selectedparent:'',
+    subGroup:'', //Default to the first item in the dropdown
+    parent:'',
     amount: '',
     target:''
 });
@@ -45,8 +45,8 @@ return ReactDOM.createPortal(
               Date
               <Input
                 type="date"
-                name="name"
-                value={formData.name}
+                name="date"
+                value={formData.date}
                 onChange={handleChange}
                 
               />
@@ -55,7 +55,7 @@ return ReactDOM.createPortal(
           <div>
             <label>
             Group
-            <Select name='selectedsubGroup' value={formData.selectedsubGroup} onChange={handleChange}>
+            <Select name='subGroup' value={formData.subGroup} onChange={handleChange}>
                 <option value='' disabled>select group</option>
                 {subGroups.map((item,index)=>(
                    <option key={index} value={item}>
@@ -71,7 +71,7 @@ return ReactDOM.createPortal(
           <div>
             <label>
             Parent
-            <Select name='selectedparent' value={formData.selectedparent} onChange={handleChange} >
+            <Select name='parent' value={formData.parent} onChange={handleChange} >
             <option value='' disabled>select parent </option>
                 {parents.map((item,index)=>(
                    <option key={index} value={item}>

@@ -32,7 +32,7 @@ text-decoration: none;
 margin-left: 5px;
 margin-bottom: 10px;
 color: black;
-background-color: ${props => (props.isSelected ? '#EEF5FF' : 'transparent')};
+background-color: ${props => (props.isselected==='true' ? '#EEF5FF' : 'transparent')};
 `
 export const OutletData = styled.div`
 width:1500px

@@ -31,7 +31,7 @@ export const Navigation=()=>{
  };
 
 const getItemProp =(id)=>{
-    return selectedItem === id ? true: false;
+    return selectedItem === id ? "true": "false";
 }
 
     return(
@@ -42,17 +42,17 @@ const getItemProp =(id)=>{
 <NavContainer>
 <Logo><IconWrapper1><FaMoneyBillTrendUp /></IconWrapper1><HeadingWrapper>FinPlanner</HeadingWrapper> </Logo>
 <SeparationLine/>
-
-<NavLinks to='/budget' isSelected={getItemProp('8')}onClick={()=>handleItemClick('8')} > <IconWrapper><BiSolidPieChartAlt /> </IconWrapper>Budget
+ 
+<NavLinks to='/budget' isselected={getItemProp('8').toString()} onClick={()=>handleItemClick('8')} > <IconWrapper><BiSolidPieChartAlt /> </IconWrapper>Budget
 </NavLinks>
 
-<NavLinks to='/transactions' isSelected={getItemProp('1')} onClick={()=>handleItemClick('1')}> <IconWrapper><AiOutlineBars /> </IconWrapper>Transactions</NavLinks>
-<NavLinks to='/account' isSelected={getItemProp('2')} onClick={()=>handleItemClick('2')}> <IconWrapper><MdOutlineOtherHouses /> </IconWrapper>Account</NavLinks>
-<NavLinks to='/dashboard' isSelected={getItemProp('3')}onClick={()=>handleItemClick('3')}><IconWrapper><TbBrandGoogleAnalytics /> </IconWrapper>Dashboard</NavLinks>
-<NavLinks to='/investment' isSelected={getItemProp('4')} onClick={()=>handleItemClick('4')}><IconWrapper><RiRefund2Fill /> </IconWrapper>Investment</NavLinks>
-<NavLinks to='/insight' isSelected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks>
-<NavLinks to='/export' isSelected={getItemProp('6')} onClick={()=>handleItemClick('6')}><IconWrapper><CiExport /> </IconWrapper>Export</NavLinks>
-<NavLinks to='/logIn' isSelected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogIn</NavLinks>
+<NavLinks to='/transactions' isselected={getItemProp('1')} onClick={()=>handleItemClick('1')}> <IconWrapper><AiOutlineBars /> </IconWrapper>Transactions</NavLinks>
+<NavLinks to='/account' isselected={getItemProp('2')} onClick={()=>handleItemClick('2')}> <IconWrapper><MdOutlineOtherHouses /> </IconWrapper>Account</NavLinks>
+<NavLinks to='/dashboard' isselected={getItemProp('3')}onClick={()=>handleItemClick('3')}><IconWrapper><TbBrandGoogleAnalytics /> </IconWrapper>Dashboard</NavLinks>
+<NavLinks to='/investment' isselected={getItemProp('4')} onClick={()=>handleItemClick('4')}><IconWrapper><RiRefund2Fill /> </IconWrapper>Investment</NavLinks>
+<NavLinks to='/insight' isselected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks>
+<NavLinks to='/export' isselected={getItemProp('6')} onClick={()=>handleItemClick('6')}><IconWrapper><CiExport /> </IconWrapper>Export</NavLinks>
+<NavLinks to='/logIn' isselected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogIn</NavLinks>
  </NavContainer>
     <OutletData>
     <Outlet/>
