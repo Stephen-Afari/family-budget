@@ -4,11 +4,9 @@ const addObjectToBudgetArray = (myArr, objToAdd) => {
     return [ ...myArr , { ...objToAdd }];
   };
 
-// const sumAllIncomes =(myArr)=>{
-// //This will return a single value as the sum of all icomes in the array.
-// return myArr.reduce((acc,cur)=> acc + cur.amount,0);
-
-// }
+const removeBudgetItem = (budgetTransactions,idToRemove)=>{
+return budgetTransactions.filter((budgetItem)=> budgetItem.id !== idToRemove)
+}
 
 export const BUDGETTRANSACTIONS_INITIAL_STATE = {
     budgettransactions: [],
@@ -22,6 +20,9 @@ export const budgetTransactionsSlice = createSlice({
         //once you setCategories anywhere in the code, it updates the initial state to include  what has been set into the array
         state.budgettransactions = addObjectToBudgetArray(state.budgettransactions, action.payload);
       },
+      removeItemFromBudget(state, action){
+        state.budgettransactions= removeBudgetItem(state.budgettransactions, action.payload)
+      }
     //   totalIncomes (state, action) {
     //     //once you setCategories anywhere in the code, it updates the initial state to include  what has been set into the array
     //     state.budgettransactions = sumAllIncomes(state.budgettransactions);
@@ -29,5 +30,5 @@ export const budgetTransactionsSlice = createSlice({
     },
   });
 
-export const { addItemToBudget} = budgetTransactionsSlice.actions;
+export const { addItemToBudget,removeItemFromBudget} = budgetTransactionsSlice.actions;
 export const budgettransactionsReducer = budgetTransactionsSlice.reducer;

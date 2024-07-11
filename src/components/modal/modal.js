@@ -5,11 +5,22 @@ import {ButtonGroup,Button1, Button2, FormGroup, Form,ModalOverlay, ModalContent
 
 export const Modal = ({isOpen,onClose, onSubmit, heading,subGroups,parents})=>{
 
+// //utility function to truncate text
+// const truncateText = (text, maxLength)=>{
+//   if(text.length <= maxLength){
+    
+//     return text + ' '.repeat(maxLength - text.length);
+//   }
+//   return text.substring(0,maxLength) + '...';
+// }
+
+
 //state
 const [formData, setFormData]= useState({
     date: '',
     subGroup:'', //Default to the first item in the dropdown
     parent:'',
+    description:'',
     amount: '',
     target:''
 });
@@ -24,7 +35,16 @@ const handleChange = (e) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
+ 
     onClose();
+    setFormData({
+      date: '',
+      subGroup:'', //Default to the first item in the dropdown
+      parent:'',
+      description:'',
+      amount: '',
+      target:''
+  })
   };
 //Renders the modal using ReactDOM.createPortal to ensure it is rendered outside the main component hierarchy.
 //e.stopPropagation prevents events from bubbling up.We add this onClick (e.stopPropagation)… so that anytime

@@ -19,7 +19,7 @@ export const ModalContent = styled.div`
   padding: 10px;
 //   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  max-width: 310px;
+  max-width: 300px;
   width: 100%;
 `;
 
@@ -31,11 +31,11 @@ background-color:#EEF7FF;
 padding:2px;
 `
 export const Input = styled.input`
-width: calc(100% - 20px);
+width: calc(100% - 5px);
 
 `
 export const Select= styled.select`
-width: calc(100% - 20px);
+width: calc(100% - 5px);
 
 `
 export const Form = styled.form`

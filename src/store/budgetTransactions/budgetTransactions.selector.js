@@ -10,10 +10,10 @@ export const selectBudgettransactions = createSelector(
     (budgetTransactionsSlice) => budgetTransactionsSlice.budgettransactions
   );
 
-  export const selectIncomeTotal = createSelector(
-   //You should use selectBudgettransactions within selectIncomeTotal to first get the budgettransactions array.
-   //selectIncomeTotal: A memoized selector that uses selectBudgettransactions to get the budgettransactions array and then calculates the total income using the reduce method with an initial accumulator value of 0.l
-    [selectBudgettransactions],
-    (budgettransactions) => budgettransactions.reduce((acc,cur)=> acc + cur.amount,0)
-  );
+  // export const selectIncomeTotal = createSelector(
+  //  //You should use selectBudgettransactions within selectIncomeTotal to first get the budgettransactions array.
+  //  //selectIncomeTotal: A memoized selector that uses selectBudgettransactions to get the budgettransactions array and then calculates the total income using the reduce method with an initial accumulator value of 0.l
+  //   [selectBudgettransactions],
+  //   (budgettransactions) => budgettransactions.reduce((acc,cur)=> acc + parseInt(cur.amount),0)
+  // );
 

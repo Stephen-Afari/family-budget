@@ -1,16 +1,21 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { BudgetHeader,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer} from "./myBudget.styles";
+import { BudgetHeader,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer} from "./myBudget.styles";
 import { useState } from "react";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {useDispatch, useSelector} from 'react-redux';
 import { Modal } from "../../components/modal/modal";
-import { addItemToBudget } from "../../store/budgetTransactions/budgetTransactions.reducer";
-import { selectBudgettransactions,selectIncomeTotal} from "../../store/budgetTransactions/budgetTransactions.selector";
+import { addItemToBudget,removeItemFromBudget} from "../../store/budgetTransactions/budgetTransactions.reducer";
+import { addIncomeItemToBudget, removeIncomeItemFromBudget } from "../../store/budgetIncome/budgetIncome.reducer";
+import { selectIncomeTotal } from "../../store/budgetIncome/budgetIncome.selector";
+import { selectBudgettransactions} from "../../store/budgetTransactions/budgetTransactions.selector";
+import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
-let idCounter=0;
+let expenseIdCounter= 0;
+let incomeIdCounter= 0;
+
 // Utility function to format as percentage
 const formatPercentage = (value, locale = 'en-US') => {
   return new Intl.NumberFormat(locale, {
@@ -20,12 +25,24 @@ const formatPercentage = (value, locale = 'en-US') => {
   }).format(value);
 };
 
+//padding function to put spaces at the end of the string.
+// const padText = (text, maxLength)=>{
+//   if(text.length< maxLength){
+//     return text.padEnd(maxLength," ")
+//   }else{
+//     return text;
+//   }
+  
+// }
+
+
 //// Utility function for currency formatting
 const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
-  return new Intl.NumberFormat(locale, { style: 'currency', currency }).format(value);
+  return new Intl.NumberFormat(locale, { style: 'currency', currency,minimumFractionDigits: 0,
+  maximumFractionDigits: 0, }).format(value);
 };
 const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
-const parents =['savings','transportation','childcare & education','utilities','food','personal care','recreation','parental care','housing','worship','debt repayment','project','family support','investment','household supplies','supplies','kindness','miscellaneous']
+const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','supplies','kindness','miscell.']
 
 //Date format MM/dd/yy
 const transactions=[
@@ -61,46 +78,60 @@ const incomes=[
  
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+  const myBudgetIncome = useSelector(selectBudgetincomes) || [];
   const totalIncome = useSelector(selectIncomeTotal);
   
-//     // a function to handle the dispatch
-// const handleAddTransactions = ()=>{
-//   let objectToAdd =  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200}
-//     dispatch(addItemToBudget(objectToAdd))
-// }
-
 
  ////////////MODAL DETAILS///////////////////////////////
+//  const headerType='Add Expense'
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [collectedData, setCollectedData] = useState(null);
+ const [modalHeader, setModalHeader]= useState(null) //set if it's an expense or income
 
- const handleOpenModal = () => setIsModalOpen(true);
+ const handleOpenModalExpense = () => {
+  setModalHeader('Add Expense')
+  setIsModalOpen(true)};
+
+  const handleOpenModalIncome = () => {
+    setModalHeader('Add Income')
+    setIsModalOpen(true)};
+
+   
+    console.log(modalHeader)
+
  const handleCloseModal = () => setIsModalOpen(false);
- const expenseHeader='Add Expense'
+ 
+
+  ////////////MODAL DETAILS///////////////////////////////
 
 
- //////////////////////SEND DATA TO REDUCER///////////////////////////////
-    // a function to handle the dispatch
-    // function handleAddTransactions(){
-    //   //let objectToAdd =  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200}
-    //     dispatch(addItemToBudget(collectedData))
-    // }
 
  /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
  const handleFormSubmit = (data) => {
-  let dataWithId = {...data, id:idCounter++};
-   setCollectedData(dataWithId);
-   dispatch(addItemToBudget(dataWithId))
+  // let dataWithId = {...data, id:idCounter++};
+  //  setCollectedData(dataWithId);
+  if(modalHeader==='Add Expense'){
+    dispatch(addItemToBudget({...data, id:expenseIdCounter++}))
+  } else{
+    dispatch(addIncomeItemToBudget({...data, id:incomeIdCounter++}))
+  }
+  
   
  };
- //console.log('Collected Data:', collectedData); // You can process the data further here
- /////////////////////////////MODAL DETALS//////////////////
- //console.log(collectedData);
+ //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
-//console.log(myBudgetTransaction);
-// console.log(totalIncome);
- 
+//remove item from budget upon click of the red circle.
+const removeFromBudget =(id)=>{
+if(modalHeader==='Add Expense'){
+  dispatch(removeItemFromBudget(id))
+}else{
+  dispatch(removeIncomeItemFromBudget(id))
+}
+
+ }
+
+
 // //filtering to show data for the selected date only 
 const filteredTransactions = selectedDate ?
 myBudgetTransaction.filter((transaction)=>{
@@ -110,11 +141,11 @@ myBudgetTransaction.filter((transaction)=>{
 
      //filtering to show data for the selected date only 
      const filteredIncome = selectedDate ? (
-      incomes.filter((income)=>{
+      myBudgetIncome.filter((income)=>{
        return new Date(income.date).toString()=== selectedDate.toString();
       })
      ):[];
-     //console.log(filteredTransactions)
+    //console.log(idCounter)
     return(
       <>
      <BudgetHeader><BudgetIconContainer><IoReorderFourSharp /> </BudgetIconContainer>Budget</BudgetHeader>
@@ -140,7 +171,7 @@ myBudgetTransaction.filter((transaction)=>{
       {filteredIncome.length >0 ? (
        
       filteredIncome.map((income)=>(
-       <TableRow key={income.id}>
+       <TableRow1 key={income.id}>
         
        <TableData><RemoveSymbol/>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
       
@@ -148,13 +179,13 @@ myBudgetTransaction.filter((transaction)=>{
       
        <TableData1>{formatPercentage(income.amount / totalIncome)}</TableData1>
        <TableData1>{formatPercentage(income.amount / totalIncome)}</TableData1>
-        </TableRow>
+        </TableRow1>
 
-   ))):(<div>No Transaction selected for this date</div>)}
+   ))):(<TableRow><TableData>No Transaction selected for this date</TableData></TableRow>)}
    </tbody>
    </MyTable>
    
-   <AddSymbol />
+   <AddSymbol onClick={handleOpenModalIncome} />
 </TableContainer>
 
 <TableContainer>
@@ -172,21 +203,21 @@ myBudgetTransaction.filter((transaction)=>{
     
       {filteredTransactions.length >0 ?
       (filteredTransactions.map((transaction)=>(
-        <TableRow key={transaction.id}>
+        <TableRow1 key={transaction.id}>
           
-       <TableData><RemoveSymbol/>{transaction.parent.slice(0,1).toUpperCase()+transaction.parent.slice(1).toLowerCase()}</TableData>
+       <TableData><RemoveSymbol onClick={()=>removeFromBudget(transaction.id)}/>{transaction.parent.slice(0,1).toUpperCase()+transaction.parent.slice(1).toLowerCase()}</TableData>
       
        
        <TableData>{formatCurrency(transaction.amount)}</TableData>
        <TableData1>{formatPercentage(transaction.amount/totalIncome)}</TableData1>
-       <TableData1>{formatPercentage(transaction.amount/totalIncome)}</TableData1>
-        </TableRow>
+       <TableData1>{formatPercentage(transaction.target/100)}</TableData1>
+        </TableRow1>
         
         
-      ))):(<div>No Transaction selected for this date</div>)}
+      ))):(<TableRow><TableData>No Transaction selected for this date</TableData></TableRow>)}
     </tbody>
     </MyTable>
-    <AddSymbol onClick={handleOpenModal}/>
+    <AddSymbol onClick={handleOpenModalExpense}/>
     </TableContainer>
    
     <Modal
@@ -195,7 +226,8 @@ myBudgetTransaction.filter((transaction)=>{
         onSubmit={handleFormSubmit}
         subGroups={subGroups}
         parents={parents}
-        heading={expenseHeader}
+        heading={modalHeader}
+       
       />
       </MyMiddleComponent>
       <RightComponent name1="Right"/>
