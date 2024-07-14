@@ -14,7 +14,7 @@ const MiddleComponent=({name})=>{
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Account</AccountHeader>
-      <SplitScreen  middleWeight={1} rightWeight={3}>
+      <SplitScreen  middleWeight={1} rightWeight={1}>
       <MiddleComponent name="Middle"/>
       <RightComponent name1="Right"/>
         </SplitScreen>

@@ -1,11 +1,13 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { BudgetHeader,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer} from "./myBudget.styles";
+import { BudgetHeader,TabContent,NavBar, RightComponent,NavTab,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer} from "./myBudget.styles";
 import { useState } from "react";
+import { Route,Routes } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {useDispatch, useSelector} from 'react-redux';
 import { Modal } from "../../components/modal/modal";
+import { Outlet } from "react-router-dom";
 import { addItemToBudget,removeItemFromBudget} from "../../store/budgetTransactions/budgetTransactions.reducer";
 import { addIncomeItemToBudget, removeIncomeItemFromBudget } from "../../store/budgetIncome/budgetIncome.reducer";
 import { selectIncomeTotal } from "../../store/budgetIncome/budgetIncome.selector";
@@ -25,26 +27,18 @@ const formatPercentage = (value, locale = 'en-US') => {
   }).format(value);
 };
 
-//padding function to put spaces at the end of the string.
-// const padText = (text, maxLength)=>{
-//   if(text.length< maxLength){
-//     return text.padEnd(maxLength," ")
-//   }else{
-//     return text;
-//   }
-  
-// }
-
-
 //// Utility function for currency formatting
 const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
   return new Intl.NumberFormat(locale, { style: 'currency', currency,minimumFractionDigits: 0,
   maximumFractionDigits: 0, }).format(value);
 };
+//arrays for dropdowns
 const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
 const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','supplies','kindness','miscell.']
+const subGroups_inc= ['mthly_sal.-A','mthly_sal.-B','annual_bonus'];
+const parents_inc =['salary-A','salary-B','bonus']
 
-//Date format MM/dd/yy
+
 const transactions=[
   {id: 1, date: '06-10-2024', subGroup:'water', parent:'utilities', description:'water bill',amount: 70, target:100},
   {id: 2, date: '06-10-2024', subGroup:'electricity', parent:'utilities',description:'light bill' ,amount: 700, target:100},
@@ -60,18 +54,66 @@ const incomes=[
   {id: 5, date: '03-10-2024', subGroup:'windfall', parent:'miscellaneous', description:'windfall' ,amount: 200, target:200},
 ]
 
-// const MiddleComponent=()=>{
-//     return(<MyMiddleComponent></MyMiddleComponent>)
-//   }
-  
-  const RightComponent=({name1})=>{
-    return(<p style={{backgroundColor: 'green'}}>{name1}</p>)
+//Mini NavBar with tabs for the Right Component
+const MiniNavbar =()=>{
+  const [activeTab, setActiveTab]= useState('tab1');
+  const renderTabContent =()=>{
+    switch(activeTab){
+      case 'tab1':
+        return <Tab1Content/>;
+      case 'tab2':
+        return <Tab2Content/>;
+      default:
+        return null;
+    }
   }
+  return(
+    <div>
+      <NavBar>
+<NavTab  className={activeTab==='tab1'?'active':null}
+onClick={()=>setActiveTab('tab1')}
+>
+  Tab 1
+</NavTab>
+<NavTab
+className={activeTab==='tab2'?'active': null}
+onClick={()=>setActiveTab('tab2')}
+>Tab 2</NavTab>
+      </NavBar>
+<TabContent>
+  {renderTabContent}
+</TabContent>
 
- 
-
-
+    </div>
+    
+   
+  )
+}
+//Test---Tab content
+const Tab1Content=()=>{
+  return(
+    
+      <p1>Tab1</p1>
+    
+  )
+}
+const Tab2Content=()=>{
+  return(
+   
+      <p1>Tab2</p1>
+   
+  )
+}
+//Rigth comp
+const RightComponent1=()=>{
+  return(
   
+    <RightComponent>
+<MiniNavbar/>
+    </RightComponent>
+  )
+}
+
   export const MyBudgetScreen=()=>{
     const [selectedDate, setSelectedDate]= useState(null);
     const dispatch = useDispatch();
@@ -95,16 +137,9 @@ const incomes=[
   const handleOpenModalIncome = () => {
     setModalHeader('Add Income')
     setIsModalOpen(true)};
-
-   
-    console.log(modalHeader)
-
  const handleCloseModal = () => setIsModalOpen(false);
  
-
   ////////////MODAL DETAILS///////////////////////////////
-
-
 
  /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
@@ -116,8 +151,7 @@ const incomes=[
   } else{
     dispatch(addIncomeItemToBudget({...data, id:incomeIdCounter++}))
   }
-  
-  
+    
  };
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
@@ -128,9 +162,7 @@ if(modalHeader==='Add Expense'){
 }else{
   dispatch(removeIncomeItemFromBudget(id))
 }
-
  }
-
 
 // //filtering to show data for the selected date only 
 const filteredTransactions = selectedDate ?
@@ -173,7 +205,7 @@ myBudgetTransaction.filter((transaction)=>{
       filteredIncome.map((income)=>(
        <TableRow1 key={income.id}>
         
-       <TableData><RemoveSymbol/>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
+       <TableData><RemoveSymbol onClick={()=>removeFromBudget(income.id)}/>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
       
        <TableData>{formatCurrency(income.amount)}</TableData>
       
@@ -224,13 +256,14 @@ myBudgetTransaction.filter((transaction)=>{
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSubmit={handleFormSubmit}
-        subGroups={subGroups}
-        parents={parents}
+        subGroups={modalHeader==='Add Expense'? subGroups: subGroups_inc}
+        parents={ modalHeader==='Add Expense'? parents: parents_inc}
         heading={modalHeader}
        
       />
       </MyMiddleComponent>
-      <RightComponent name1="Right"/>
+      <RightComponent1/>
+    
         </SplitScreen>
         </>
        

@@ -2,6 +2,7 @@ import styled,{ createGlobalStyle }  from 'styled-components';
 import 'react-datepicker/dist/react-datepicker.css';
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiCircleRemove } from "react-icons/ci";
+import { NavLink } from 'react-router-dom';
 
 export const MyTable= styled.table`
 width: 100%;
@@ -184,4 +185,28 @@ margin-left: 170px;
 `
 export const HorizontalRule=styled.hr`
 display:flex;
+`
+
+export const NavBar= styled.div`
+display: flex;
+border-bottom: 1px solid #ccc;
+`
+
+export const NavTab = styled(NavLink)`
+padding: 10px 20px;
+text-decoration: none;
+color: black;
+& .active {
+  border-bottom: 2px solid blue;
+  font-weight: bold;
+}
+
+`
+
+export const RightComponent= styled.div`
+
+`
+
+export const TabContent = styled.div`
+
 `
