@@ -10,10 +10,22 @@ export const selectBudgettransactions = createSelector(
     (budgetTransactionsSlice) => budgetTransactionsSlice.budgettransactions
   );
 
-  // export const selectIncomeTotal = createSelector(
-  //  //You should use selectBudgettransactions within selectIncomeTotal to first get the budgettransactions array.
-  //  //selectIncomeTotal: A memoized selector that uses selectBudgettransactions to get the budgettransactions array and then calculates the total income using the reduce method with an initial accumulator value of 0.l
-  //   [selectBudgettransactions],
-  //   (budgettransactions) => budgettransactions.reduce((acc,cur)=> acc + parseInt(cur.amount),0)
-  // );
+  // Selector to filter budgetexpenses by selected date
+export const selectBudgettransactionByDate = (selectedDate)=>
+   createSelector(
+  [selectBudgettransactions],
+  (budgettransactions)=> budgettransactions.filter(
+    (exp)=>(
+    new Date(exp.date).toString() === new Date(selectedDate).toString())
+ )
+)
 
+// Selector to calculate total exp for a selected date
+
+export const selectExpenseTotalByDate = (selectedDate)=>
+  createSelector(
+  [selectBudgettransactionByDate(selectedDate)],
+  (filteredExp)=>(
+filteredExp.reduce((acc,cur)=>acc + parseInt(cur.amount),0)
+  )
+)

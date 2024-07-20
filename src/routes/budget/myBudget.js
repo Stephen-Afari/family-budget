@@ -1,18 +1,18 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { BudgetHeader,TabContent,NavBar, RightComponent,NavTab,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer} from "./myBudget.styles";
+import { BudgetHeader,TabContentContainer,SubGroupIcon,DescriptionIcon,ParentIcon,TabContent,NavBar, RightComponent,NavTab,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer, IncomeHeader, TabIncAmount, TabIncTotal, TabHeader, TabInc, TabExp, TabAmount, TabAmountContainer, TableBodyContainer, TabListITem, NetIncomeDisplay, BudgetHeaderContainer, BudgetHeaderLeft, NetIncomeAmount} from "./myBudget.styles";
 import { useState } from "react";
-import { Route,Routes } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {useDispatch, useSelector} from 'react-redux';
 import { Modal } from "../../components/modal/modal";
-import { Outlet } from "react-router-dom";
 import { addItemToBudget,removeItemFromBudget} from "../../store/budgetTransactions/budgetTransactions.reducer";
 import { addIncomeItemToBudget, removeIncomeItemFromBudget } from "../../store/budgetIncome/budgetIncome.reducer";
 import { selectIncomeTotal } from "../../store/budgetIncome/budgetIncome.selector";
-import { selectBudgettransactions} from "../../store/budgetTransactions/budgetTransactions.selector";
+import { selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
+import { selectBudgettransactionByDate, selectBudgettransactions, selectExpenseTotalByDate} from "../../store/budgetTransactions/budgetTransactions.selector";
 import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
+
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
 let expenseIdCounter= 0;
@@ -55,14 +55,164 @@ const incomes=[
 ]
 
 //Mini NavBar with tabs for the Right Component
-const MiniNavbar =()=>{
+//To achieve the behavior where clicking on a tab displays content below the tab within the right-hand component, you need to manage the routing within the right-hand component itself. This involves keeping the mini navbar and its tab content within the same component structure.
+const MiniNavbar =({selectProp})=>{
   const [activeTab, setActiveTab]= useState('tab1');
+//data from the store
+  const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+ const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectProp)(state));
+ const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectProp)(state))
+ const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+//console.log(totalExpense)
+//filter inc
+let filteredInc = selectProp ? 
+myBudgetIncome.filter((inc)=>{
+  return new Date(inc.date).toString()=== selectProp.toString()}
+)
+:[]
+
+//filter exp
+let filteredExp = selectProp ? 
+myBudgetTransaction.filter((exp)=>{
+  return new Date(exp.date).toString()=== selectProp.toString()}
+)
+:[]
+
+
+
+//Tab contents displayed below the tabs
+const Tab1Content=()=>{
+  return(
+    
+    <TabContentContainer>
+<TabInc>
+  <TabHeader>
+    Incomes
+  </TabHeader>
+   {/* {filteredInc.map((inc)=>(
+    <TabContent key={inc.id}>
+   <TabAmountContainer> <TabAmount>{inc.parent}</TabAmount>  <TabAmount>{formatCurrency(inc.amount)}</TabAmount></TabAmountContainer>
+    </TabContent>
+   
+   ))} */}
+<TabContent>
+ <TabAmountContainer> <TabIncTotal>Total Income = </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+  
+</TabContent>
+</TabInc> 
+
+<TabExp>
+<TabHeader>
+    Expenses
+  </TabHeader>
+  {/* {filteredExp.map((exp)=>(
+    <TabContent key={exp.id}>
+   <TabAmountContainer> <TabAmount>{exp.parent}</TabAmount>  <TabAmount>{formatCurrency(exp.amount)}</TabAmount></TabAmountContainer>
+    </TabContent>
+   
+   ))} */}
+<TabContent>
+  <TabAmountContainer><TabIncTotal>Total Expense =</TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+  
+</TabContent>
+</TabExp>
+
+    </TabContentContainer>
+
+    
+  )
+}
+const Tab2Content=()=>{
+  return(
+   
+       
+    <TabContentContainer>
+<TabInc>
+  <TabHeader>
+    Incomes
+  </TabHeader>
+   {filteredInc.map((inc)=>(
+    <TabContent key={inc.id}>
+    <TabAmountContainer><TabAmount><TabListITem/>{inc.subGroup}</TabAmount>  <TabAmount>{formatCurrency(inc.amount)}</TabAmount></TabAmountContainer>
+    </TabContent>
+   
+   ))}
+<TabContent>
+  <TabAmountContainer><TabIncTotal><TabListITem/> Total Income = </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+  
+</TabContent>
+</TabInc> 
+
+<TabExp>
+<TabHeader>
+    Expenses
+  </TabHeader>
+  {filteredExp.map((exp)=>(
+    <TabContent key={exp.id}>
+    <TabAmountContainer><TabAmount><TabListITem/>{exp.subGroup}</TabAmount>  <TabAmount>{formatCurrency(exp.amount)}</TabAmount></TabAmountContainer>
+    </TabContent>
+   
+   ))}
+<TabContent>
+ <TabAmountContainer> <TabIncTotal><TabListITem/>Total Expense =</TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+  
+</TabContent>
+</TabExp>
+
+    </TabContentContainer>
+   
+  )
+}
+
+const Tab3Content=()=>{
+  return(
+   
+    <TabContentContainer>
+    <TabInc>
+      <TabHeader>
+        Incomes
+      </TabHeader>
+       {filteredInc.map((inc)=>(
+        <TabContent key={inc.id}>
+        <TabAmountContainer><TabAmount><TabListITem/>{inc.description}</TabAmount>  <TabAmount>{formatCurrency(inc.amount)}</TabAmount></TabAmountContainer>
+        </TabContent>
+       
+       ))}
+    <TabContent>
+      <TabAmountContainer><TabIncTotal><TabListITem/>Total Income = </TabIncTotal><TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+      
+    </TabContent>
+    </TabInc> 
+    
+    <TabExp>
+    <TabHeader>
+        Expenses
+      </TabHeader>
+      {filteredExp.map((exp)=>(
+        <TabContent key={exp.id}>
+       <TabAmountContainer> <TabAmount><TabListITem/>{exp.description}</TabAmount>  <TabAmount>{formatCurrency(exp.amount)}</TabAmount></TabAmountContainer>
+        </TabContent>
+       
+       ))}
+    <TabContent>
+      <TabAmountContainer><TabIncTotal><TabListITem/>Total Expense = </TabIncTotal><TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+      
+    </TabContent>
+    </TabExp>
+    
+        </TabContentContainer>
+   
+  )
+}
+
   const renderTabContent =()=>{
     switch(activeTab){
       case 'tab1':
         return <Tab1Content/>;
       case 'tab2':
         return <Tab2Content/>;
+      case 'tab3':
+        return <Tab3Content/>
       default:
         return null;
     }
@@ -70,18 +220,27 @@ const MiniNavbar =()=>{
   return(
     <div>
       <NavBar>
-<NavTab  className={activeTab==='tab1'?'active':null}
+<NavTab  active={activeTab ==='tab1'? "true": "false"} //Once you click on this tab, change the state of activeTab to tab1 and make the active prop true
 onClick={()=>setActiveTab('tab1')}
 >
-  Tab 1
+  <ParentIcon/>
+  Parent
 </NavTab>
 <NavTab
-className={activeTab==='tab2'?'active': null}
+active ={activeTab ==='tab2'? "true": "false"}
 onClick={()=>setActiveTab('tab2')}
->Tab 2</NavTab>
+>
+  <SubGroupIcon/>
+  SubGrp.</NavTab>
+<NavTab active={activeTab==='tab3'?"true": "false"}
+onClick={()=>setActiveTab('tab3')}
+>
+  <DescriptionIcon/>
+  Details
+</NavTab>
       </NavBar>
 <TabContent>
-  {renderTabContent}
+  {renderTabContent()}
 </TabContent>
 
     </div>
@@ -89,29 +248,29 @@ onClick={()=>setActiveTab('tab2')}
    
   )
 }
-//Test---Tab content
-const Tab1Content=()=>{
-  return(
-    
-      <p1>Tab1</p1>
-    
-  )
-}
-const Tab2Content=()=>{
-  return(
-   
-      <p1>Tab2</p1>
-   
-  )
-}
+
 //Rigth comp
-const RightComponent1=()=>{
+const RightComponent1=({selectDate})=>{
   return(
   
     <RightComponent>
-<MiniNavbar/>
+<MiniNavbar selectProp={selectDate}/>
     </RightComponent>
   )
+}
+
+//Component for displaying NetIncome
+const NetIcomeComponent=({totalInc, totalExp})=>{
+  
+  const netIncomeValue = totalInc - totalExp;
+  const netIncomeFormatted = formatCurrency(netIncomeValue); //formatCurrency formats it as a string
+return(
+  <NetIncomeDisplay netInc={netIncomeValue}>Net Income
+      <NetIncomeAmount>
+        {netIncomeFormatted}
+      </NetIncomeAmount>
+         </NetIncomeDisplay>
+)
 }
 
   export const MyBudgetScreen=()=>{
@@ -120,8 +279,10 @@ const RightComponent1=()=>{
  
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+  const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
+  const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
   const myBudgetIncome = useSelector(selectBudgetincomes) || [];
-  const totalIncome = useSelector(selectIncomeTotal);
+ // const totalIncome = useSelector(selectIncomeTotal);
   
 
  ////////////MODAL DETAILS///////////////////////////////
@@ -180,13 +341,21 @@ myBudgetTransaction.filter((transaction)=>{
     //console.log(idCounter)
     return(
       <>
+      <BudgetHeaderContainer>
+      <BudgetHeaderLeft>
      <BudgetHeader><BudgetIconContainer><IoReorderFourSharp /> </BudgetIconContainer>Budget</BudgetHeader>
      {/* //Date Picker component */}
       <DatePickerContainer>
         <GlobalStyle/>
       <DatePicker selected={selectedDate} onChange={(selectedDate)=>setSelectedDate(selectedDate)}  dateFormat="MMMM-d-yyyy"
           placeholderText="Select a date"/></DatePickerContainer>
-      <SplitScreen  middleWeight={1} rightWeight={3}>
+      </BudgetHeaderLeft>
+      <NetIcomeComponent 
+      totalInc={totalIncome}   //pass info as props
+      totalExp={totalExpense}
+      />
+      </BudgetHeaderContainer>
+      <SplitScreen  middleWeight={1} rightWeight={4}>
       <MyMiddleComponent >
 <TableContainer>
       <MyTable>
@@ -199,7 +368,7 @@ myBudgetTransaction.filter((transaction)=>{
             <TableHead>Targ.</TableHead>
         </TableRow>
         </thead>
-        <tbody>
+        <TableBodyContainer>
       {filteredIncome.length >0 ? (
        
       filteredIncome.map((income)=>(
@@ -214,7 +383,7 @@ myBudgetTransaction.filter((transaction)=>{
         </TableRow1>
 
    ))):(<TableRow><TableData>No Transaction selected for this date</TableData></TableRow>)}
-   </tbody>
+   </TableBodyContainer>
    </MyTable>
    
    <AddSymbol onClick={handleOpenModalIncome} />
@@ -231,7 +400,7 @@ myBudgetTransaction.filter((transaction)=>{
             <TableHead>Targ.</TableHead>
         </TableRow>
         </thead>
-      <tbody>
+      <TableBodyContainer>
     
       {filteredTransactions.length >0 ?
       (filteredTransactions.map((transaction)=>(
@@ -247,7 +416,7 @@ myBudgetTransaction.filter((transaction)=>{
         
         
       ))):(<TableRow><TableData>No Transaction selected for this date</TableData></TableRow>)}
-    </tbody>
+    </TableBodyContainer>
     </MyTable>
     <AddSymbol onClick={handleOpenModalExpense}/>
     </TableContainer>
@@ -262,7 +431,7 @@ myBudgetTransaction.filter((transaction)=>{
        
       />
       </MyMiddleComponent>
-      <RightComponent1/>
+      <RightComponent1 selectDate={selectedDate}/>
     
         </SplitScreen>
         </>

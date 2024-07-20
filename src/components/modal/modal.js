@@ -72,22 +72,7 @@ return ReactDOM.createPortal(
               />
             </label>
           </div>
-          <div>
-            <label>
-            Group
-            <Select name='subGroup' value={formData.subGroup} onChange={handleChange}>
-                <option value='' disabled>select group</option>
-                {subGroups.map((item,index)=>(
-                   <option key={index} value={item}>
-                    {item}
-                   </option> 
-                ))}
-
-            </Select>
-
-            </label>
-                 
-          </div>     
+          
           <div>
             <label>
             Parent
@@ -104,6 +89,22 @@ return ReactDOM.createPortal(
             </label>
 
           </div>
+          <div>
+            <label>
+            Group
+            <Select name='subGroup' value={formData.subGroup} onChange={handleChange}>
+                <option value='' disabled>select group</option>
+                {subGroups.map((item,index)=>(
+                   <option key={index} value={item}>
+                    {item}
+                   </option> 
+                ))}
+
+            </Select>
+
+            </label>
+                 
+          </div>     
           <div>
             <label>
               Description
