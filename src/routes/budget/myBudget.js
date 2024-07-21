@@ -96,7 +96,7 @@ const Tab1Content=()=>{
    
    ))} */}
 <TabContent>
- <TabAmountContainer> <TabIncTotal>Total Income = </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+ <TabAmountContainer> <TabIncTotal>Total Income </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
   
 </TabContent>
 </TabInc> 
@@ -112,7 +112,7 @@ const Tab1Content=()=>{
    
    ))} */}
 <TabContent>
-  <TabAmountContainer><TabIncTotal>Total Expense =</TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+  <TabAmountContainer><TabIncTotal>Total Expense </TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
   
 </TabContent>
 </TabExp>
@@ -138,7 +138,7 @@ const Tab2Content=()=>{
    
    ))}
 <TabContent>
-  <TabAmountContainer><TabIncTotal><TabListITem/> Total Income = </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+  <TabAmountContainer><TabIncTotal>Total Income </TabIncTotal> <TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
   
 </TabContent>
 </TabInc> 
@@ -154,7 +154,7 @@ const Tab2Content=()=>{
    
    ))}
 <TabContent>
- <TabAmountContainer> <TabIncTotal><TabListITem/>Total Expense =</TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+ <TabAmountContainer> <TabIncTotal>Total Expense</TabIncTotal> <TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
   
 </TabContent>
 </TabExp>
@@ -179,7 +179,7 @@ const Tab3Content=()=>{
        
        ))}
     <TabContent>
-      <TabAmountContainer><TabIncTotal><TabListITem/>Total Income = </TabIncTotal><TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
+      <TabAmountContainer><TabIncTotal>Total Income </TabIncTotal><TabIncTotal>{formatCurrency(totalIncome)}</TabIncTotal></TabAmountContainer>
       
     </TabContent>
     </TabInc> 
@@ -195,7 +195,7 @@ const Tab3Content=()=>{
        
        ))}
     <TabContent>
-      <TabAmountContainer><TabIncTotal><TabListITem/>Total Expense = </TabIncTotal><TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
+      <TabAmountContainer><TabIncTotal>Total Expense </TabIncTotal><TabIncTotal>{formatCurrency(totalExpense)}</TabIncTotal></TabAmountContainer>
       
     </TabContent>
     </TabExp>

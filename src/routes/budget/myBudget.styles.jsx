@@ -242,6 +242,8 @@ ${(props)=>
 
 export const RightComponent= styled.div`
 margin-right:0px;
+background-color:#F6F6F6
+border-radius: 20px;
 `
 
 export const TabContent = styled.div`
