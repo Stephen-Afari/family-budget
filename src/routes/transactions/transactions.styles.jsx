@@ -1,4 +1,6 @@
 import styled,{ createGlobalStyle }  from 'styled-components';
+import { CiCircleRemove } from "react-icons/ci";
+import { IoIosAddCircleOutline } from 'react-icons/io';
 
 export const TransactionHeader = styled.h4`
 display: flex;
@@ -96,4 +98,74 @@ color: #686D76;
     
 }
   
+`
+export const TableBodyContainer=styled.tbody`
+
+`
+export const TableData = styled.td`
+font-size:13px;
+// padding: 10px;
+  position: relative; // Ensure positioning context for RemoveSymbol
+
+  &:nth-child(1){
+    padding-right: 30px; // Adjust as needed for large space between first two columns
+    width: 160px;
+  }
+  &:nth-child(2){
+    padding-left: 55px;  // Adjust as needed for large space between first two columns
+    width: 150px;
+  }
+  &:nth-child(n+3){
+    padding-left:10px; padding-left: 8px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  }
+  font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  &: hover{
+    overflow: visible;
+  }
+  white-space: nowrap; /* Prevent text from wrapping */
+`
+export const TableData1 = styled.td`
+padding-right:10px;
+font-size:10px;
+// padding: 10px;
+  position: relative; // Ensure positioning context for RemoveSymbol
+
+  &:nth-child(1){
+    padding-right: 30px; // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(2){
+    padding-left: 30px;  // Adjust as needed for large space between first two columns
+  }
+  &:nth-child(n+3){
+    padding-left:10px; padding-left: 5px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  }
+  font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* Prevent text from wrapping */
+`
+export const RemoveSymbol = styled(CiCircleRemove)`
+
+visibility: hidden;
+  cursor: pointer;
+
+  // Show the icon on hover of the TableData component
+  ${TableData}:hover & {
+    visibility: visible;
+    color: red;
+  }
+
+`
+//styling for a React Icon.
+export const AddSymbol= styled(IoIosAddCircleOutline)`
+font-size:20px;
+margin-left: 6px;
+margin-top:2px;
+
+&:hover{
+    color: green;
+    cursor: pointer;
+}
 `

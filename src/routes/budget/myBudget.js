@@ -265,7 +265,7 @@ const NetIcomeComponent=({totalInc, totalExp})=>{
   const netIncomeValue = totalInc - totalExp;
   const netIncomeFormatted = formatCurrency(netIncomeValue); //formatCurrency formats it as a string
 return(
-  <NetIncomeDisplay netInc={netIncomeValue}>Net Income
+  <NetIncomeDisplay netinc={netIncomeValue}>Net Income
       <NetIncomeAmount>
         {netIncomeFormatted}
       </NetIncomeAmount>
@@ -379,7 +379,7 @@ myBudgetTransaction.filter((transaction)=>{
        <TableData>{formatCurrency(income.amount)}</TableData>
       
        <TableData1>{formatPercentage(income.amount / totalIncome)}</TableData1>
-       <TableData1>{formatPercentage(income.amount / totalIncome)}</TableData1>
+       <TableData1>{formatPercentage(income.target/100)}</TableData1>
         </TableRow1>
 
    ))):(<TableRow><TableData>No Transaction selected for this date</TableData></TableRow>)}
