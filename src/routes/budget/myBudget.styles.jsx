@@ -285,8 +285,8 @@ export const TabExp = styled.div`
 margin-top: 50px;
 `
 export const NetIncomeDisplay= styled.div`
-background-color: ${(props)=>props.netinc >0 ? 'green' :
-props.netinc ===0 ?'yellow':'red'
+background-color: ${(props)=>props.netinc >0 ? '#A7D397' :
+props.netinc ===0 ?'#F5F7F8':'#CE5959'
 };
 border-radius: 5px;
 padding: 0px 10px 0px 10px;

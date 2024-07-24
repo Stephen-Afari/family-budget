@@ -1,6 +1,10 @@
 import styled,{ createGlobalStyle }  from 'styled-components';
 import { CiCircleRemove } from "react-icons/ci";
 import { IoIosAddCircleOutline } from 'react-icons/io';
+import { IoListCircleOutline } from 'react-icons/io5';
+import { NavLink } from 'react-router-dom';
+import { TbHierarchy, TbListDetails } from 'react-icons/tb';
+import { MdOutlineSummarize } from 'react-icons/md';
 
 export const TransactionHeader = styled.h4`
 display: flex;
@@ -169,3 +173,115 @@ margin-top:2px;
     cursor: pointer;
 }
 `
+export const RightComponent= styled.div`
+margin-right:0px;
+background-color:#F6F6F6
+border-radius: 20px;
+`
+export const TabContent = styled.div`
+margin-top: 5px;
+`
+
+export const TabContentContainer = styled.div`
+margin-top: 20px;
+margin-left: 5px;
+overflow: scroll;
+height: 450px;
+`
+export const TabHeader = styled.h4`
+//border-bottom: 1px solid black;
+width: 85px;
+font-size:14px;
+`
+export const TabAmount = styled.p`
+font-family: 'Courier New', Courier, monospace; /* Monospaced font */
+font-size:12px;
+width: 120px;
+margin-left:1px;
+margin-bottom: 2px;
+`
+export const TabAmountContainer=styled.div`
+display: flex;
+flex-direction:row;
+gap: 30px;
+`
+export const TabIncTotal = styled.p`
+font-weight: bold;
+font-size:12px;
+width: 120px;
+`
+export const TabInc = styled.div`
+
+`
+export const TabExp = styled.div`
+margin-top: 50px;
+`
+
+export const TabListITem = styled(IoListCircleOutline)`
+margin-right:2px;
+// margin-top: 2px;
+font-size:9px;
+`
+
+export const NavBar= styled.div`
+display: flex;
+// border-bottom: 1px solid #ccc;
+`
+
+export const NavTab = styled(NavLink)`
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 10px 20px;
+  text-decoration: none;
+  color: black;
+  background: none;
+  border: none;
+  cursor: pointer;
+${(props)=>
+  props.active === 'true'?
+  `
+  border-bottom: 2px solid black;
+  font-weight: bold
+  `
+  :
+  `
+  border-bottom: none;
+  font-weight: normal;
+  `
+}
+
+`
+export const ParentIcon =styled(TbHierarchy)`
+margin-left: 13px;
+`
+export const SubGroupIcon =styled(MdOutlineSummarize)`
+margin-left: 13px;
+`
+export const DescriptionIcon =styled(TbListDetails)`
+margin-left: 13px;
+`
+export const NetIncomeDisplay= styled.div`
+background-color: ${(props)=>props.netinc >0 ? '#A7D397' :
+props.netinc ===0 ?'#F5F7F8':'#CE5959'
+};
+border-radius: 5px;
+padding: 0px 10px 0px 10px;
+color: white;
+font-size:12px;
+height: 35px;
+font-weight: bold;
+margin-top: 5px;
+`
+export const NetIncomeAmount= styled.div`
+
+`
+export const ActualHeaderLeft= styled.div`
+
+`
+export const ActualHeaderContainer= styled.div`
+display:flex;
+flex-direction:row;
+gap: 240px;
+`
+
