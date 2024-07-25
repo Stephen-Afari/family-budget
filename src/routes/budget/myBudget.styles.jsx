@@ -229,7 +229,8 @@ ${(props)=>
   props.active === 'true'?
   `
   border-bottom: 2px solid black;
-  font-weight: bold
+  font-weight: bold;
+   background: #EEF7FF;
   `
   :
   `
