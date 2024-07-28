@@ -68,7 +68,7 @@ console.log(filteredTransactions)
             {filteredIncomes.length > 0 ? (
               filteredIncomes.map((income) => (
                 <tr key={income.id}>
-                  <td>{new Date(income.date).toLocaleDateString()}</td>
+                  <td>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</td>
                   <td>{income.description}</td>
                   <td>{income.amount}</td>
                 </tr>
