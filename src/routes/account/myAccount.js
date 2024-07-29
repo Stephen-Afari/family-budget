@@ -25,10 +25,14 @@ const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', '
       let itemYear = itemDate.getFullYear();
       let itemMonth = itemDate.getMonth();
 
-      if(itemYear !== year) return false;
-      if(itemMonth==='All') return true;
+     // Check if the year matches
+    if (itemYear !== year) return false;
 
-      return itemMonth === months.indexOf(month)-1; //indexOf(month) returns the index of the month string within the months array. For example, months.indexOf('January') returns 1.months.indexOf(month) - 1 converts the one-based index (starting from 1) to a zero-based index (starting from 0) to match the zero-based index returned by getMonth()
+    // Check if the month is 'All'
+    if (month === 'All') return true;
+
+    // Check if the month matches
+    return itemMonth === months.indexOf(month) - 1; //indexOf(month) returns the index of the month string within the months array. For example, months.indexOf('January') returns 1.months.indexOf(month) - 1 converts the one-based index (starting from 1) to a zero-based index (starting from 0) to match the zero-based index returned by getMonth()
 
     })
     }
