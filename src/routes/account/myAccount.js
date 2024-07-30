@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { selectActualincomes } from "../../store/actualIncome/actualIncome.selector";
 import { selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
+import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
+import { selectBudgettransactions } from "../../store/budgetTransactions/budgetTransactions.selector";
 
 const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -17,6 +19,20 @@ const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', '
     
     const myActualIncomes = useSelector(selectActualincomes) || [];
     const myActualExpenses = useSelector(selectActualtransactions) || [];
+    const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+    const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+
+    //filter arrays
+    const filterData=(data,mydate)=>{
+      let results=[];
+    if(mydate){
+      results= data.filter((item)=>{
+        new Date(item.date).toDateString() === new Date(mydate).toDateString()
+     })
+    }
+     
+return results;
+    }
 
     //Function to filter date by year and month
     const filterDataByYearAndMonth = (data, year, month)=>{
