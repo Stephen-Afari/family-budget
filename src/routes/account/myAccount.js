@@ -2,7 +2,7 @@ import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
 import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableContainer, TableRow, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { selectActualincomes } from "../../store/actualIncome/actualIncome.selector";
 import { selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
@@ -21,18 +21,23 @@ const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', '
     const myActualExpenses = useSelector(selectActualtransactions) || [];
     const myBudgetIncome = useSelector(selectBudgetincomes) || [];
     const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+//Once the application loads, set the year and month to the ff.
+    useEffect(()=>{
+      setSelectedYear(new Date().getFullYear());
+      setSelectedMonth('All')
 
+    },[])
     //filter arrays
-    const filterData=(data,mydate)=>{
-      let results=[];
-    if(mydate){
-      results= data.filter((item)=>{
-        new Date(item.date).toDateString() === new Date(mydate).toDateString()
-     })
-    }
+//     const filterData = (data,mydate)=>{
+//       let results=[];
+//     if(mydate){
+//     results =  data.filter((item)=>{
+//         return new Date(item.date).toDateString() === new Date(mydate).toDateString()
+//       })
+//     }
      
-return results;
-    }
+// return results;
+//     }
 
     //Function to filter date by year and month
     const filterDataByYearAndMonth = (data, year, month)=>{
