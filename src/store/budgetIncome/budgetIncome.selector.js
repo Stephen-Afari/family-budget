@@ -34,3 +34,32 @@ export const selectIncomeTotalByDate = (selectedDate) =>
     (filteredIncomes) => filteredIncomes.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 
+    // Selector to filter budgetincomes by selected year and month
+export const selectBudgetincomesByYearAndMonth = (selectedYear,selectedMonth, months) =>
+  createSelector(
+    [selectBudgetincomes],
+    (budgetincomes) =>
+      budgetincomes.filter(
+        
+        (income) => {
+          let incDate = new Date(income.date);
+          let incMonth = incDate.getMonth();
+          let incYear = incDate.getFullYear();
+
+          if(incYear !== selectedYear) return false;
+          if(selectedMonth ==='All') return true;
+
+          return incMonth ===  months.indexOf(selectedMonth) - 1;
+        }
+      )
+  );
+
+  // Selector to calculate total income for a selected date
+export const selectIncomeTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
+  createSelector(
+    [selectBudgetincomesByYearAndMonth(selectedYear,selectedMonth, months)],
+    (filteredIncomesByYearAndMonth) => filteredIncomesByYearAndMonth.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
+  );
+
+
+

@@ -1,15 +1,30 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableContainer, TableRow, YearDropdown } from "./myAccount.styles";
+import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableContainer, TableData, TableData1, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { selectActualincomes } from "../../store/actualIncome/actualIncome.selector";
-import { selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
-import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
-import { selectBudgettransactions } from "../../store/budgetTransactions/budgetTransactions.selector";
+import { selectActualincomes, selectActualIncomeTotalByDate } from "../../store/actualIncome/actualIncome.selector";
+import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
+import { selectBudgetincomes, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
+import { selectBudgettransactions, selectExpenseTotalByDate } from "../../store/budgetTransactions/budgetTransactions.selector";
 
 const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+//// Utility function for currency formatting
+const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
+  return new Intl.NumberFormat(locale, { style: 'currency', currency,minimumFractionDigits: 0,
+  maximumFractionDigits: 0, }).format(value);
+};
+
+// Utility function to format as percentage
+const formatPercentage = (value, locale = 'en-US') => {
+  return new Intl.NumberFormat(locale, {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(value);
+};
 
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
@@ -21,6 +36,7 @@ const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', '
     const myActualExpenses = useSelector(selectActualtransactions) || [];
     const myBudgetIncome = useSelector(selectBudgetincomes) || [];
     const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+    const [selectedDate, setSelectedDate]= useState(null);
 //Once the application loads, set the year and month to the ff.
     useEffect(()=>{
       setSelectedYear(new Date().getFullYear());
@@ -57,9 +73,38 @@ const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', '
 
     })
     }
-const filteredIncomes = filterDataByYearAndMonth(myActualIncomes,selectedYear, selectedMonth);
-const filteredTransactions = filterDataByYearAndMonth(myActualExpenses,selectedYear, selectedMonth);
-console.log(filteredTransactions)
+const filteredActualIncomes = filterDataByYearAndMonth(myActualIncomes,selectedYear, selectedMonth);
+const filteredActualTransactions = filterDataByYearAndMonth(myActualExpenses,selectedYear, selectedMonth);
+const filteredPlanIncomes = filterDataByYearAndMonth(myBudgetIncome,selectedYear, selectedMonth);
+const filteredPlanTransactions = filterDataByYearAndMonth(myBudgetTransaction,selectedYear, selectedMonth);
+const totalActIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedDate)(state));
+const totalActExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state));
+const totalPlanIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
+  const totalPlanExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
+
+//Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
+const combinedFilteredIncomeItems = (planInc, actualInc)=>{
+return(
+planInc.map((planItem)=>{
+let actualItem = actualInc.find((actItem)=>( actItem.parent === planItem.parent) || {});
+return {
+  planParent: planItem.parent,
+  planAmount: planItem.amount || 0,
+  planPercentage:formatPercentage(planItem.amount/totalPlanIncome),
+  actualParent: actualItem.parent,
+  actualAmount: actualItem.amount || 0,
+  actualPercentage: formatPercentage(actualItem.amount/totalActIncome)
+
+}
+})
+
+)
+
+}
+//console.log(combinedFilteredIncomeItems(filteredPlanIncomes,filteredActualIncomes))
+
+
+console.log(totalActIncome)
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
@@ -80,23 +125,24 @@ console.log(filteredTransactions)
         <MyIncomeTable>
           <thead>
             <TableRow>
-              <th>Income</th>
-              <th>Plan</th>
-              <th>Actual</th>
-              <th>Var</th>
-              <th>Plan %</th>
-              <th>Actual %</th>
-              <th>Var %</th>
+              <TableHead>Parent</TableHead>
+              
+              <TableHead>Plan</TableHead>
+              <TableHead>Actual</TableHead>
+              <TableHead>Var</TableHead>
+              <TableHead>Plan %</TableHead>
+              <TableHead>Actual %</TableHead>
+              <TableHead>Var %</TableHead>
             </TableRow>
           </thead>
           <tbody>
-            {filteredIncomes.length > 0 ? (
-              filteredIncomes.map((income) => (
-                <tr key={income.id}>
-                  <td>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</td>
-                  <td>{income.description}</td>
-                  <td>{income.amount}</td>
-                </tr>
+            {filteredPlanIncomes.length > 0 ? (
+              filteredPlanIncomes.map((income) => (
+                <TableRow1 key={income.id}>
+                  <TableData>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
+                 
+                  <TableData>{formatCurrency(income.amount)}</TableData>
+                </TableRow1>
               ))
             ) : (
               <tr>
@@ -110,18 +156,19 @@ console.log(filteredTransactions)
         <MyExpenseTable>
         <thead>
             <TableRow>
-              <th>Expense</th>
-              <th>Plan</th>
-              <th>Actual</th>
-              <th>Var</th>
-              <th>Plan %</th>
-              <th>Actual %</th>
-              <th>Var %</th>
+            <TableHead>Parent</TableHead>
+             
+              <TableHead>Plan</TableHead>
+              <TableHead>Actual</TableHead>
+              <TableHead>Var</TableHead>
+              <TableHead>Plan %</TableHead>
+              <TableHead>Actual %</TableHead>
+              <TableHead>Var %</TableHead>
             </TableRow>
           </thead>
           <tbody>
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((transaction) => (
+            {filteredPlanTransactions.length > 0 ? (
+              filteredPlanTransactions.map((transaction) => (
                 <tr key={transaction.id}>
                   <td>{new Date(transaction.date).toLocaleDateString()}</td>
                   <td>{transaction.description}</td>
