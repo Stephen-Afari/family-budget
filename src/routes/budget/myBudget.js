@@ -15,8 +15,8 @@ import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selec
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
-let expenseIdCounter= 0;
-let incomeIdCounter= 0;
+// let expenseIdCounter= 0;
+// let incomeIdCounter= 0;
 
 // Utility function to format as percentage
 const formatPercentage = (value, locale = 'en-US') => {
@@ -290,6 +290,20 @@ return(
  const [isModalOpen, setIsModalOpen] = useState(false);
  const [collectedData, setCollectedData] = useState(null);
  const [modalHeader, setModalHeader]= useState(null) //set if it's an expense or income
+ const [expenseIdCounter,setexpenseIdCounter ]= useState(() => {
+  return parseInt(localStorage.getItem('expenseIdCounter')) || 0;
+});
+ const [incomeIdCounter,setIncomeIdCounter ]= useState(() => {
+  return parseInt(localStorage.getItem('incomeIdCounter')) || 0;
+});
+//Use useEffect to save the counter value to localStorage whenever it changes.
+useEffect(() => {
+  localStorage.setItem('expenseIdCounter', expenseIdCounter);
+}, [expenseIdCounter]);
+
+useEffect(() => {
+  localStorage.setItem('incomeIdCounter', incomeIdCounter);
+}, [incomeIdCounter]);
 
  const handleOpenModalExpense = () => {
   setModalHeader('Add Expense')
@@ -308,12 +322,17 @@ return(
   // let dataWithId = {...data, id:idCounter++};
   //  setCollectedData(dataWithId);
   if(modalHeader==='Add Expense'){
-    dispatch(addItemToBudget({...data, id:expenseIdCounter++}))
+  let newId= expenseIdCounter;
+  setexpenseIdCounter(expenseIdCounter + 1)
+    dispatch(addItemToBudget({...data, id:newId}))
   } else{
-    dispatch(addIncomeItemToBudget({...data, id:incomeIdCounter++}))
+    let newId=incomeIdCounter;
+    setIncomeIdCounter(incomeIdCounter + 1);
+    dispatch(addIncomeItemToBudget({...data, id:newId}))
   }
     
  };
+ //console.log(incomeIdCounter)
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
 //remove item from budget upon click of the red circle.

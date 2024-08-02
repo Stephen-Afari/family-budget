@@ -34,6 +34,16 @@ export const selectIncomeTotalByDate = (selectedDate) =>
     (filteredIncomes) => filteredIncomes.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 
+//This function parses a date string and returns an object with the year and month extracted. This helps avoid repeated date parsing logic in selectors.
+const parseDate =(passedDate)=>{
+  let incDate = new Date(passedDate),
+       incMonth = incDate.getMonth(),
+      incYear = incDate.getFullYear();
+  return{
+    month: incMonth,
+    year: incYear
+  }
+}
     // Selector to filter budgetincomes by selected year and month
 export const selectBudgetincomesByYearAndMonth = (selectedYear,selectedMonth, months) =>
   createSelector(
@@ -42,20 +52,19 @@ export const selectBudgetincomesByYearAndMonth = (selectedYear,selectedMonth, mo
       budgetincomes.filter(
         
         (income) => {
-          let incDate = new Date(income.date);
-          let incMonth = incDate.getMonth();
-          let incYear = incDate.getFullYear();
 
-          if(incYear !== selectedYear) return false;
+          const {month, year}= parseDate(income.date);
+        
+          if(year !== selectedYear) return false;
           if(selectedMonth ==='All') return true;
 
-          return incMonth ===  months.indexOf(selectedMonth) - 1;
+          return month ===  months.indexOf(selectedMonth) - 1;
         }
       )
   );
 
   // Selector to calculate total income for a selected date
-export const selectIncomeTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
+export const selectBudgetIncomeTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
   createSelector(
     [selectBudgetincomesByYearAndMonth(selectedYear,selectedMonth, months)],
     (filteredIncomesByYearAndMonth) => filteredIncomesByYearAndMonth.reduce((acc, cur) => acc + parseInt(cur.amount), 0)

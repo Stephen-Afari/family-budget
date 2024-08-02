@@ -2,7 +2,7 @@ import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
 import { DatePickerContainer,TableRow1 ,GlobalStyle, MyMiddleComponent, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableHead, TableRow, TransactionHeader,TransactionIconContainer, RemoveSymbol, AddSymbol, RightComponent, TabContentContainer, TabInc, TabHeader, TabContent, TabAmountContainer, TabIncTotal, TabExp, TabAmount, TabListITem, NavBar, NavTab, ParentIcon, SubGroupIcon, DescriptionIcon, NetIncomeDisplay, NetIncomeAmount, ActualHeaderContainer, ActualHeaderLeft } from "./transactions.styles";
 import DatePicker from "react-datepicker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "../../components/modal/modal";
 import { useDispatch, useSelector } from "react-redux";
 import { selectActualincomes, selectActualIncomeTotalByDate } from "../../store/actualIncome/actualIncome.selector";
@@ -12,8 +12,8 @@ import { addItemToActual, removeItemFromActual } from "../../store/actualTransac
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
-let expenseIdCounter= 0;
-let incomeIdCounter= 0;
+// let expenseIdCounter= 0;
+// let incomeIdCounter= 0;
 //let idCounter= 0;
 
 // Utility function to format as percentage
@@ -284,6 +284,16 @@ const totalIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedD
 const totalExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state))
 const myActualIncome = useSelector(selectActualincomes) || [];
 const myActualTransaction = useSelector(selectActualtransactions) || [];
+const [expenseIdCounter, setExpenseIdCounter] = useState(()=>{return parseInt(localStorage.getItem('expenseIdCounter')) || 0});
+const [incomeIdCounter, setIncomeIdCounter] = useState(()=>{ return parseInt(localStorage.getItem('incomeIdCounter')) || 0});
+////Use useEffect to save the counter value to localStorage whenever it changes.
+useEffect(()=>{
+localStorage.setItem('expenseIdCounter',expenseIdCounter)
+},[expenseIdCounter])
+
+useEffect(()=>{
+  localStorage.setItem('incomeIdCounter',incomeIdCounter)
+  },[incomeIdCounter])
 
 // console.log(totalExpense)
   //filtering to show data for the selected date only 
@@ -322,12 +332,18 @@ const myActualTransaction = useSelector(selectActualtransactions) || [];
    //setCollectedData(dataWithId);
 
   if(modalHeader==='Add Expense'){
-    dispatch(addItemToActual({...data, id:expenseIdCounter++}))
+    let newId=expenseIdCounter;
+    setExpenseIdCounter(expenseIdCounter + 1)
+    dispatch(addItemToActual({...data, id:newId}))
   } else{
-    dispatch(addIncomeItemToActual({...data, id:incomeIdCounter++}))
+    let newId=incomeIdCounter;
+    setIncomeIdCounter(incomeIdCounter +1)
+    dispatch(addIncomeItemToActual({...data, id:newId}))
   }
   handleCloseModal(); // Close modal after submitting
  };
+
+ console.log(incomeIdCounter)
 
  //remove item from budget upon click of the red circle.
  const handleRemoveIncome = (id) => {

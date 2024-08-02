@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { selectActualincomes, selectActualIncomeTotalByDate } from "../../store/actualIncome/actualIncome.selector";
 import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
-import { selectBudgetincomes, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
-import { selectBudgettransactions, selectExpenseTotalByDate } from "../../store/budgetTransactions/budgetTransactions.selector";
+import { selectBudgetincomes, selectBudgetIncomeTotalByYearAndMonth, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
+import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalByYearAndMonth } from "../../store/budgetTransactions/budgetTransactions.selector";
 
 const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -79,9 +79,10 @@ const filteredPlanIncomes = filterDataByYearAndMonth(myBudgetIncome,selectedYear
 const filteredPlanTransactions = filterDataByYearAndMonth(myBudgetTransaction,selectedYear, selectedMonth);
 const totalActIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedDate)(state));
 const totalActExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state));
-const totalPlanIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
-  const totalPlanExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
-
+// const totalPlanIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
+  //const totalPlanExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
+  const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
+ const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
 //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
 const combinedFilteredIncomeItems = (planInc, actualInc)=>{
 return(
@@ -104,7 +105,7 @@ return {
 //console.log(combinedFilteredIncomeItems(filteredPlanIncomes,filteredActualIncomes))
 
 
-console.log(totalActIncome)
+console.log(totalPlanExpense)
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
