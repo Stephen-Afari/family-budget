@@ -3,8 +3,8 @@ import { IoReorderFourSharp } from "react-icons/io5";
 import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableContainer, TableData, TableData1, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import { selectActualincomes, selectActualIncomeTotalByDate } from "../../store/actualIncome/actualIncome.selector";
-import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
+import { selectActualincomes, selectActualIncomeTotalByDate, selectActualIncomeTotalByYearAndMonth } from "../../store/actualIncome/actualIncome.selector";
+import { selectActualExpenseTotalByDate, selectActualExpenseTotalByYearAndMonth, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { selectBudgetincomes, selectBudgetIncomeTotalByYearAndMonth, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalByYearAndMonth } from "../../store/budgetTransactions/budgetTransactions.selector";
 
@@ -77,35 +77,58 @@ const filteredActualIncomes = filterDataByYearAndMonth(myActualIncomes,selectedY
 const filteredActualTransactions = filterDataByYearAndMonth(myActualExpenses,selectedYear, selectedMonth);
 const filteredPlanIncomes = filterDataByYearAndMonth(myBudgetIncome,selectedYear, selectedMonth);
 const filteredPlanTransactions = filterDataByYearAndMonth(myBudgetTransaction,selectedYear, selectedMonth);
-const totalActIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedDate)(state));
-const totalActExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state));
-// const totalPlanIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
-  //const totalPlanExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
   const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
  const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
-//Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
-const combinedFilteredIncomeItems = (planInc, actualInc)=>{
-return(
-planInc.map((planItem)=>{
-let actualItem = actualInc.find((actItem)=>( actItem.parent === planItem.parent) || {});
-return {
-  planParent: planItem.parent,
-  planAmount: planItem.amount || 0,
-  planPercentage:formatPercentage(planItem.amount/totalPlanIncome),
-  actualParent: actualItem.parent,
-  actualAmount: actualItem.amount || 0,
-  actualPercentage: formatPercentage(actualItem.amount/totalActIncome)
+const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+ //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
 
-}
-})
+//Flattening a result typically means taking a nested structure and reducing it to a simpler, one-level structure. In the context of arrays, it means converting an array of arrays into a single array that contains all the elements of the nested arrays.
 
-)
+//flatMap iterates over each planItem in the planInc array.
+//For each planItem, it filters the actualInc array to find all actualItems with the same parent.
+//If there are no matching actual items, it returns an array with a single object where actualAmount is 0.
+//If there are matching actual items, it maps over these items to create an array of combined objects.
+//flatMap flattens the resulting arrays into a single array, combining all the elements into one level.
+//Flattening: Reduces a nested structure to a simpler, one-level structure.
+//const nestedArray = [[1, 2], [3, 4], [5, 6]];
+//const flattenedArray = [1, 2, 3, 4, 5, 6];
+const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
+  return planInc.flatMap((planItem) => {
+    const matchingActualItems = actualInc.filter((actItem) => actItem.parent === planItem.parent);
 
-}
-//console.log(combinedFilteredIncomeItems(filteredPlanIncomes,filteredActualIncomes))
+    if (matchingActualItems.length === 0) {
+      // If there are no matching actual items, return the plan item with 0 actuals
+      return [{
+        planParent: planItem.parent,
+        planAmount: planItem.amount || 0,
+        planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+        actualParent: planItem.parent,
+        actualAmount: 0,
+        actualPercentage: formatPercentage(0)
+      }];
+    }
+
+    // Return combined items for each matching actual item
+    return matchingActualItems.map((actualItem) => ({
+      planParent: planItem.parent,
+      planAmount: planItem.amount || 0,
+      planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+      actualParent: actualItem.parent,
+      actualAmount: actualItem.amount || 0,
+      actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
+    }));
+  });
+};
 
 
-console.log(totalPlanExpense)
+
+
+// console.log(totalPlanIncome)
+// console.log(totalActIncome)
+
+
+//console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes))
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
@@ -137,12 +160,17 @@ console.log(totalPlanExpense)
             </TableRow>
           </thead>
           <tbody>
-            {filteredPlanIncomes.length > 0 ? (
-              filteredPlanIncomes.map((income) => (
-                <TableRow1 key={income.id}>
-                  <TableData>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
+            {combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).length > 0 ? (
+              combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).map((income,index) => (
+                <TableRow1 key={index}>
+                  <TableData>{income.planParent.charAt(0).toUpperCase()+income.planParent.substring(1)}</TableData>
                  
-                  <TableData>{formatCurrency(income.amount)}</TableData>
+                  <TableData>{formatCurrency(income.planAmount)}</TableData>
+                  <TableData>{formatCurrency(income.actualAmount)}</TableData>
+                  <TableData>{formatCurrency(income.planAmount - income.actualAmount) }</TableData>
+                  <TableData>{income.planPercentage}</TableData>
+                  <TableData>{income.actualPercentage}</TableData>
+                  <TableData>{`${formatPercentage((parseInt(income.planPercentage) - parseInt(income.actualPercentage)))}`}</TableData>
                 </TableRow1>
               ))
             ) : (

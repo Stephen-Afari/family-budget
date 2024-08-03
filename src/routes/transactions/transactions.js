@@ -336,14 +336,14 @@ useEffect(()=>{
     setExpenseIdCounter(expenseIdCounter + 1)
     dispatch(addItemToActual({...data, id:newId}))
   } else{
-    let newId=incomeIdCounter;
-    setIncomeIdCounter(incomeIdCounter +1)
+    let newId = incomeIdCounter;
+    setIncomeIdCounter(incomeIdCounter + 1)
     dispatch(addIncomeItemToActual({...data, id:newId}))
   }
   handleCloseModal(); // Close modal after submitting
  };
 
- console.log(incomeIdCounter)
+ //console.log(incomeIdCounter)
 
  //remove item from budget upon click of the red circle.
  const handleRemoveIncome = (id) => {

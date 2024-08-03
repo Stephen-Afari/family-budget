@@ -29,3 +29,44 @@ export const selectActualExpenseTotalByDate = (selectedDate)=>
 filteredExp.reduce((acc,cur)=>acc + parseInt(cur.amount),0)
   )
 )
+
+
+//////////////////////////
+//This function parses a date string and returns an object with the year and month extracted. This helps avoid repeated date parsing logic in selectors.
+const parseDate =(passedDate)=>{
+  let incDate = new Date(passedDate),
+       incMonth = incDate.getMonth(),
+      incYear = incDate.getFullYear();
+  return{
+    month: incMonth,
+    year: incYear
+  }
+}
+    // Selector to filter budgetincomes by selected year and month
+export const selectActualtransactionByYearAndMonth = (selectedYear,selectedMonth, months) =>
+  createSelector(
+    [selectActualtransactions],
+    (actualtransactions) =>
+      actualtransactions.filter(
+        
+        (exp) => {
+
+          const {month, year}= parseDate(exp.date);
+        
+          if(year !== selectedYear) return false;
+          if(selectedMonth ==='All') return true;
+
+          return month ===  months.indexOf(selectedMonth) - 1;
+        }
+      )
+  );
+
+  // Selector to calculate total income for a selected date
+export const selectActualExpenseTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
+  createSelector(
+    [selectActualtransactionByYearAndMonth(selectedYear,selectedMonth, months)],
+    (filteredExpenseByYearAndMonth) => filteredExpenseByYearAndMonth.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
+  );
+
+
+

@@ -117,8 +117,9 @@ font-size:13px;
   }
   &:nth-child(2){
     padding-left: 55px;  // Adjust as needed for large space between first two columns
-    width: 150px;
+    width: 170px;
   }
+  
   &:nth-child(n+3){
     padding-left:10px; padding-left: 8px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
   }
