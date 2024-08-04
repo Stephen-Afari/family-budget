@@ -46,7 +46,7 @@ margin-bottom: 5px;
 `
 
 export const TableContainer = styled.div`
-  width:900px;
+  width:920px;
 // max-width: 200px;
 overflow-y: auto;
 border-radius: 8px;
@@ -72,27 +72,33 @@ table-layout: fixed;  //fixed table layout
 font-family: 'Courier New', Courier, monospace; /* Monospaced font */
 `
 export const TableHead = styled.th`
-padding-left:15px;
+padding-left:5px;
 height:20px;
 color: #686D76;
   text-align: left;
   &:nth-child(1){
     //padding-right: 40px; // Adjust as needed for large space between first two columns
- width: 150px;
+ width: 100px;
   }
   &:nth-child(2){
-    padding-left: 65px;  // Adjust as needed for large space between first two columns
+    padding-left: 15px;  // Adjust as needed for large space between first two columns
     width: 70px;
     
   }
   &:nth-child(3){
-    padding-left:87px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+    padding-left:18px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
     
 }
   &:nth-child(n+4){
     padding-left:1px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
     
 }
+  &:last-child{
+    padding-left:0px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+    width:55px;
+}
+
+
 
 `
 export const TableRow1 = styled.tr`
@@ -110,19 +116,35 @@ export const TableData = styled.td`
 font-size:13px;
 // padding: 10px;
   position: relative; // Ensure positioning context for RemoveSymbol
+  
 
   &:nth-child(1){
-    padding-right: 30px; // Adjust as needed for large space between first two columns
-    width: 160px;
+    padding-right:5px; // Adjust as needed for large space between first two columns
+    width: 110px;
   }
   &:nth-child(2){
-    padding-left: 55px;  // Adjust as needed for large space between first two columns
-    width: 170px;
+    padding-left: 40px;  // Adjust as needed for large space between first two columns
+    
+    width: 150px;
   }
-  
-  &:nth-child(n+3){
-    padding-left:10px; padding-left: 8px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+    &:nth-child(3){
+    padding-left: 10px;  // Adjust as needed for large space between first two columns
+    
+    width: 100px;
   }
+    &:nth-child(4){
+    padding-left: 15px;  // Adjust as needed for large space between first two columns
+    
+    width: 99px;
+  }
+  &:nth-child(n+5){
+    padding-left:12px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  width: 100px;
+    }
+   &:last-child{
+    padding-left:35px;  // Adjust as needed for equal spacing from the third column onwards (n starts from zero)
+  width: 90px;
+    }
   font-family: 'Courier New', Courier, monospace; /* Monospaced font */
   overflow: hidden;
   text-overflow: ellipsis;
@@ -150,4 +172,8 @@ font-size:10px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; /* Prevent text from wrapping */
+`
+
+export const TableBodyContainer=styled.tbody`
+
 `

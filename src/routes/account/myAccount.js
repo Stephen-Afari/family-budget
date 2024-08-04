@@ -1,6 +1,6 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableContainer, TableData, TableData1, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
+import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { selectActualincomes, selectActualIncomeTotalByDate, selectActualIncomeTotalByYearAndMonth } from "../../store/actualIncome/actualIncome.selector";
@@ -94,32 +94,59 @@ const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMon
 //const nestedArray = [[1, 2], [3, 4], [5, 6]];
 //const flattenedArray = [1, 2, 3, 4, 5, 6];
 const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
-  return planInc.flatMap((planItem) => {
-    const matchingActualItems = actualInc.filter((actItem) => actItem.parent === planItem.parent);
 
-    if (matchingActualItems.length === 0) {
-      // If there are no matching actual items, return the plan item with 0 actuals
-      return [{
-        planParent: planItem.parent,
-        planAmount: planItem.amount || 0,
-        planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
-        actualParent: planItem.parent,
-        actualAmount: 0,
-        actualPercentage: formatPercentage(0)
-      }];
-    }
-
-    // Return combined items for each matching actual item
-    return matchingActualItems.map((actualItem) => ({
-      planParent: planItem.parent,
-      planAmount: planItem.amount || 0,
-      planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
-      actualParent: actualItem.parent,
-      actualAmount: actualItem.amount || 0,
-      actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
-    }));
-  });
-};
+  // Create a map to track actual items by their parent -- {parent1:[{}], parent2:[{}]}
+ const actualItemsMap= actualInc.reduce((map,actualItem)=>{
+   if(!map[actualItem.parent]){
+     map[actualItem.parent]=[];
+   }
+   map[actualItem.parent].push(actualItem)
+ return map;
+ },{})
+ 
+ // Combine plan and actual items
+ const combinedItems = planInc.flatMap((planItem)=>{
+ const matchingActualItems = actualItemsMap[planItem.parent] || [];
+ 
+ if(matchingActualItems.length === 0){
+   return ([
+ {
+ 
+   planParent: planItem.parent,
+         planAmount: planItem.amount || 0,
+         planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+         actualParent: '',
+         actualAmount: 0,
+         actualPercentage: formatPercentage(0)
+ }])
+ }
+ return matchingActualItems.map((actualItem)=>({
+   planParent: planItem.parent,
+       planAmount: planItem.amount || 0,
+       planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+       actualParent: actualItem.parent,
+       actualAmount: actualItem.amount || 0,
+       actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
+ }))
+ 
+ })
+  // Add actual items that don't have a corresponding plan item
+  actualInc.forEach((actualItem)=>{
+   if(!planInc.find((planItem)=>planItem.parent === actualItem.parent)){
+     combinedItems.push({
+       planParent: '',
+       planAmount: 0,
+       planPercentage: formatPercentage(0),
+       actualParent: actualItem.parent,
+       actualAmount: actualItem.amount || 0,
+       actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
+     });
+   }
+  })
+ 
+ return combinedItems
+ 
+ };
 
 
 
@@ -128,7 +155,7 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
 // console.log(totalActIncome)
 
 
-//console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes))
+console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
@@ -149,7 +176,7 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
         <MyIncomeTable>
           <thead>
             <TableRow>
-              <TableHead>Parent</TableHead>
+              <TableHead>Income</TableHead>
               
               <TableHead>Plan</TableHead>
               <TableHead>Actual</TableHead>
@@ -159,18 +186,17 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
               <TableHead>Var %</TableHead>
             </TableRow>
           </thead>
-          <tbody>
-            {combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).length > 0 ? (
-              combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).map((income,index) => (
+          <TableBodyContainer>
+            { combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).length > 0 ? (
+               combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome).map((income,index) => (
                 <TableRow1 key={index}>
                   <TableData>{income.planParent.charAt(0).toUpperCase()+income.planParent.substring(1)}</TableData>
-                 
                   <TableData>{formatCurrency(income.planAmount)}</TableData>
                   <TableData>{formatCurrency(income.actualAmount)}</TableData>
                   <TableData>{formatCurrency(income.planAmount - income.actualAmount) }</TableData>
                   <TableData>{income.planPercentage}</TableData>
                   <TableData>{income.actualPercentage}</TableData>
-                  <TableData>{`${formatPercentage((parseInt(income.planPercentage) - parseInt(income.actualPercentage)))}`}</TableData>
+                  <TableData>{`${formatPercentage((parseInt(income.planPercentage) - parseInt(income.actualPercentage))/100)}`}</TableData>
                 </TableRow1>
               ))
             ) : (
@@ -178,14 +204,14 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
                 <td colSpan="3">No incomes for the selected period</td>
               </tr>
             )}
-          </tbody>
+          </TableBodyContainer>
         </MyIncomeTable>
 
        
         <MyExpenseTable>
         <thead>
             <TableRow>
-            <TableHead>Parent</TableHead>
+            <TableHead>Expense</TableHead>
              
               <TableHead>Plan</TableHead>
               <TableHead>Actual</TableHead>
@@ -195,21 +221,25 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
               <TableHead>Var %</TableHead>
             </TableRow>
           </thead>
-          <tbody>
-            {filteredPlanTransactions.length > 0 ? (
-              filteredPlanTransactions.map((transaction) => (
-                <tr key={transaction.id}>
-                  <td>{new Date(transaction.date).toLocaleDateString()}</td>
-                  <td>{transaction.description}</td>
-                  <td>{transaction.amount}</td>
-                </tr>
+          <TableBodyContainer>
+            {combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).length > 0 ? (
+              combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).map((transaction,index) => (
+                <TableRow1 key={index}>
+                  <TableData>{transaction.actualParent.charAt(0).toUpperCase()+transaction.actualParent.substring(1) || transaction.planParent.charAt(0).toUpperCase()+transaction.planParent.substring(1)}</TableData>
+                  <TableData>{formatCurrency(transaction.planAmount)}</TableData>
+                  <TableData>{formatCurrency(transaction.actualAmount)}</TableData>
+                  <TableData>{formatCurrency(transaction.planAmount - transaction.actualAmount) }</TableData>
+                  <TableData>{transaction.planPercentage}</TableData>
+                  <TableData>{transaction.actualPercentage}</TableData>
+                  <TableData>{`${formatPercentage((parseInt(transaction.planPercentage) - parseInt(transaction.actualPercentage))/100)}`}</TableData>
+                </TableRow1>
               ))
             ) : (
               <tr>
                 <td colSpan="3">No transactions for the selected period</td>
               </tr>
             )}
-          </tbody>
+          </TableBodyContainer>
         </MyExpenseTable>
       </TableContainer>
 
