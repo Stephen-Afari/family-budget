@@ -1,6 +1,6 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
+import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { selectActualincomes, selectActualIncomeTotalByDate, selectActualIncomeTotalByYearAndMonth } from "../../store/actualIncome/actualIncome.selector";
@@ -193,16 +193,16 @@ console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransac
                   <TableData>{income.planParent.charAt(0).toUpperCase()+income.planParent.substring(1)}</TableData>
                   <TableData>{formatCurrency(income.planAmount)}</TableData>
                   <TableData>{formatCurrency(income.actualAmount)}</TableData>
-                  <TableData>{formatCurrency(income.planAmount - income.actualAmount) }</TableData>
+                  <TableDataProps variance={income.planAmount - income.actualAmount}>{formatCurrency(income.planAmount - income.actualAmount) }</TableDataProps>
                   <TableData>{income.planPercentage}</TableData>
                   <TableData>{income.actualPercentage}</TableData>
-                  <TableData>{`${formatPercentage((parseInt(income.planPercentage) - parseInt(income.actualPercentage))/100)}`}</TableData>
+                  <TableDataVarPcnt varpcnt={parseInt(income.planPercentage) - parseInt(income.actualPercentage) }>{`${formatPercentage((parseInt(income.planPercentage) - parseInt(income.actualPercentage))/100)}`}</TableDataVarPcnt>
                 </TableRow1>
               ))
             ) : (
-              <tr>
-                <td colSpan="3">No incomes for the selected period</td>
-              </tr>
+              <TableRow>
+                <TableData colSpan="10">No incomes for the selected period</TableData>
+              </TableRow>
             )}
           </TableBodyContainer>
         </MyIncomeTable>
@@ -227,17 +227,17 @@ console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransac
                 <TableRow1 key={index}>
                   <TableData>{transaction.actualParent.charAt(0).toUpperCase()+transaction.actualParent.substring(1) || transaction.planParent.charAt(0).toUpperCase()+transaction.planParent.substring(1)}</TableData>
                   <TableData>{formatCurrency(transaction.planAmount)}</TableData>
-                  <TableData>{formatCurrency(transaction.actualAmount)}</TableData>
-                  <TableData>{formatCurrency(transaction.planAmount - transaction.actualAmount) }</TableData>
+                  <TableData >{formatCurrency(transaction.actualAmount)}</TableData>
+                  <TableDataProps variance={transaction.planAmount - transaction.actualAmount}>{formatCurrency(transaction.planAmount - transaction.actualAmount) }</TableDataProps>
                   <TableData>{transaction.planPercentage}</TableData>
                   <TableData>{transaction.actualPercentage}</TableData>
-                  <TableData>{`${formatPercentage((parseInt(transaction.planPercentage) - parseInt(transaction.actualPercentage))/100)}`}</TableData>
+                  <TableDataVarPcnt varpcnt={parseInt(transaction.planPercentage) - parseInt(transaction.actualPercentage)}>{`${formatPercentage((parseInt(transaction.planPercentage) - parseInt(transaction.actualPercentage))/100)}`}</TableDataVarPcnt>
                 </TableRow1>
               ))
             ) : (
-              <tr>
-                <td colSpan="3">No transactions for the selected period</td>
-              </tr>
+              <TableRow>
+                <TableData >No transactions for the selected period</TableData>
+              </TableRow>
             )}
           </TableBodyContainer>
         </MyExpenseTable>
