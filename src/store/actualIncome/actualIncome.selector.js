@@ -72,3 +72,30 @@ export const selectActualIncomeTotalByYearAndMonth = (selectedYear,selectedMonth
     (filteredIncomesByYearAndMonth) => filteredIncomesByYearAndMonth.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 
+  ////////////////
+     // Selector to filter budgetincomes by selected year and month
+export const selectActualincomesByYear = (selectedYear) =>
+  createSelector(
+    [selectActualincomes],
+    (actualincomes) =>
+      actualincomes.filter(
+        
+        (income) => {
+
+          const {month, year}= parseDate(income.date);
+        
+          //if(year !== selectedYear) return false;
+          //if(selectedMonth ==='All') return true;
+
+          return year ===  selectedYear;
+        }
+      )
+  );
+
+  // Selector to calculate total income for a selected date
+export const selectActualIncomeTotalByYear = (selectedYear) =>
+  createSelector(
+    [selectActualincomesByYear(selectedYear)],
+    (filteredIncomesByYear) => filteredIncomesByYear.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
+  );
+

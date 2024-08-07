@@ -3,13 +3,14 @@ import { IoReorderFourSharp } from "react-icons/io5";
 import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import combinedFilteredItems from "../../components/common/combineFIlters";
 import { selectActualincomes, selectActualIncomeTotalByDate, selectActualIncomeTotalByYearAndMonth } from "../../store/actualIncome/actualIncome.selector";
 import { selectActualExpenseTotalByDate, selectActualExpenseTotalByYearAndMonth, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { selectBudgetincomes, selectBudgetIncomeTotalByYearAndMonth, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalByYearAndMonth } from "../../store/budgetTransactions/budgetTransactions.selector";
-
-const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
-const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+import { years,months } from "../../components/common/periods";
+// const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
+// const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 //// Utility function for currency formatting
 const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
@@ -81,72 +82,72 @@ const filteredPlanTransactions = filterDataByYearAndMonth(myBudgetTransaction,se
  const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
 const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
 const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
- //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
+//  //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
 
-//Flattening a result typically means taking a nested structure and reducing it to a simpler, one-level structure. In the context of arrays, it means converting an array of arrays into a single array that contains all the elements of the nested arrays.
+// //Flattening a result typically means taking a nested structure and reducing it to a simpler, one-level structure. In the context of arrays, it means converting an array of arrays into a single array that contains all the elements of the nested arrays.
 
-//flatMap iterates over each planItem in the planInc array.
-//For each planItem, it filters the actualInc array to find all actualItems with the same parent.
-//If there are no matching actual items, it returns an array with a single object where actualAmount is 0.
-//If there are matching actual items, it maps over these items to create an array of combined objects.
-//flatMap flattens the resulting arrays into a single array, combining all the elements into one level.
-//Flattening: Reduces a nested structure to a simpler, one-level structure.
-//const nestedArray = [[1, 2], [3, 4], [5, 6]];
-//const flattenedArray = [1, 2, 3, 4, 5, 6];
-const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
+// //flatMap iterates over each planItem in the planInc array.
+// //For each planItem, it filters the actualInc array to find all actualItems with the same parent.
+// //If there are no matching actual items, it returns an array with a single object where actualAmount is 0.
+// //If there are matching actual items, it maps over these items to create an array of combined objects.
+// //flatMap flattens the resulting arrays into a single array, combining all the elements into one level.
+// //Flattening: Reduces a nested structure to a simpler, one-level structure.
+// //const nestedArray = [[1, 2], [3, 4], [5, 6]];
+// //const flattenedArray = [1, 2, 3, 4, 5, 6];
+// const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
 
-  // Create a map to track actual items by their parent -- {parent1:[{}], parent2:[{}]}
- const actualItemsMap= actualInc.reduce((map,actualItem)=>{
-   if(!map[actualItem.parent]){
-     map[actualItem.parent]=[];
-   }
-   map[actualItem.parent].push(actualItem)
- return map;
- },{})
+//   // Create a map to track actual items by their parent -- {parent1:[{}], parent2:[{}]}
+//  const actualItemsMap= actualInc.reduce((map,actualItem)=>{
+//    if(!map[actualItem.parent]){
+//      map[actualItem.parent]=[];
+//    }
+//    map[actualItem.parent].push(actualItem)
+//  return map;
+//  },{})
  
- // Combine plan and actual items
- const combinedItems = planInc.flatMap((planItem)=>{
- const matchingActualItems = actualItemsMap[planItem.parent] || [];
+//  // Combine plan and actual items
+//  const combinedItems = planInc.flatMap((planItem)=>{
+//  const matchingActualItems = actualItemsMap[planItem.parent] || [];
  
- if(matchingActualItems.length === 0){
-   return ([
- {
+//  if(matchingActualItems.length === 0){
+//    return ([
+//  {
  
-   planParent: planItem.parent,
-         planAmount: planItem.amount || 0,
-         planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
-         actualParent: '',
-         actualAmount: 0,
-         actualPercentage: formatPercentage(0)
- }])
- }
- return matchingActualItems.map((actualItem)=>({
-   planParent: planItem.parent,
-       planAmount: planItem.amount || 0,
-       planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
-       actualParent: actualItem.parent,
-       actualAmount: actualItem.amount || 0,
-       actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
- }))
+//    planParent: planItem.parent,
+//          planAmount: planItem.amount || 0,
+//          planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+//          actualParent: '',
+//          actualAmount: 0,
+//          actualPercentage: formatPercentage(0)
+//  }])
+//  }
+//  return matchingActualItems.map((actualItem)=>({
+//    planParent: planItem.parent,
+//        planAmount: planItem.amount || 0,
+//        planPercentage: formatPercentage(planItem.amount / totalPlanIncome),
+//        actualParent: actualItem.parent,
+//        actualAmount: actualItem.amount || 0,
+//        actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
+//  }))
  
- })
-  // Add actual items that don't have a corresponding plan item
-  actualInc.forEach((actualItem)=>{
-   if(!planInc.find((planItem)=>planItem.parent === actualItem.parent)){
-     combinedItems.push({
-       planParent: '',
-       planAmount: 0,
-       planPercentage: formatPercentage(0),
-       actualParent: actualItem.parent,
-       actualAmount: actualItem.amount || 0,
-       actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
-     });
-   }
-  })
+//  })
+//   // Add actual items that don't have a corresponding plan item
+//   actualInc.forEach((actualItem)=>{
+//    if(!planInc.find((planItem)=>planItem.parent === actualItem.parent)){
+//      combinedItems.push({
+//        planParent: '',
+//        planAmount: 0,
+//        planPercentage: formatPercentage(0),
+//        actualParent: actualItem.parent,
+//        actualAmount: actualItem.amount || 0,
+//        actualPercentage: formatPercentage(actualItem.amount / totalActIncome)
+//      });
+//    }
+//   })
  
- return combinedItems
+//  return combinedItems
  
- };
+//  };
 
 
 
@@ -154,8 +155,10 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
 // console.log(totalPlanIncome)
 // console.log(totalActIncome)
 
-
-console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
+//console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome))
+//console.log(filteredPlanIncomes)
+//console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
+//console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
