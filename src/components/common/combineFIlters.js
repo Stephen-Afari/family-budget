@@ -173,70 +173,70 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
 
 export default combinedFilteredItems;  
 
-//Using Parent as the key
-const combinedFilteredItems2 = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
-  // Aggregate plan amounts by parent
-  const planItemsMap = planInc.reduce((map, planItem) => {
-    if (!map[planItem.parent]) {
-      map[planItem.parent] = { amount: 0 };
-    }
-    map[planItem.parent].amount += parseInt(planItem.amount);
-    return map;
-  }, {});
+// //Using Parent as the key
+// const combinedFilteredItems2 = (planInc, actualInc, totalPlanIncome, totalActIncome) => {
+//   // Aggregate plan amounts by parent
+//   const planItemsMap = planInc.reduce((map, planItem) => {
+//     if (!map[planItem.parent]) {
+//       map[planItem.parent] = { amount: 0 };
+//     }
+//     map[planItem.parent].amount += parseInt(planItem.amount);
+//     return map;
+//   }, {});
 
-  // Aggregate actual amounts by parent
-  const actualItemsMap = actualInc.reduce((map, actualItem) => {
-    if (!map[actualItem.parent]) {
-      map[actualItem.parent] = { amount: 0 };
-    }
-    map[actualItem.parent].amount += parseInt(actualItem.amount);
-    return map;
-  }, {});
+//   // Aggregate actual amounts by parent
+//   const actualItemsMap = actualInc.reduce((map, actualItem) => {
+//     if (!map[actualItem.parent]) {
+//       map[actualItem.parent] = { amount: 0 };
+//     }
+//     map[actualItem.parent].amount += parseInt(actualItem.amount);
+//     return map;
+//   }, {});
 
-  // Combine plan and actual items
-  const combinedItems = Object.keys(planItemsMap).flatMap((parent) => {
-    const planAmount = planItemsMap[parent].amount || 0;
-    const actualAmount = actualItemsMap[parent]?.amount || 0;
+//   // Combine plan and actual items
+//   const combinedItems = Object.keys(planItemsMap).flatMap((parent) => {
+//     const planAmount = planItemsMap[parent].amount || 0;
+//     const actualAmount = actualItemsMap[parent]?.amount || 0;
 
-    return [{
-      planParent: parent,
-      planAmount: planAmount,
-      planPercentage: formatPercentage(planAmount / totalPlanIncome),
-      actualParent: parent,
-      actualAmount: actualAmount,
-      actualPercentage: formatPercentage(actualAmount / totalActIncome)
-    }];
-  });
+//     return [{
+//       planParent: parent,
+//       planAmount: planAmount,
+//       planPercentage: formatPercentage(planAmount / totalPlanIncome),
+//       actualParent: parent,
+//       actualAmount: actualAmount,
+//       actualPercentage: formatPercentage(actualAmount / totalActIncome)
+//     }];
+//   });
 
-  // Add actual items that don't have a corresponding plan item
-  Object.keys(actualItemsMap).forEach((parent) => {
-    if (!planItemsMap[parent]) {
-      const actualAmount = actualItemsMap[parent].amount;
-      combinedItems.push({
-        planParent: '',
-        planAmount: 0,
-        planPercentage: formatPercentage(0),
-        actualParent: parent,
-        actualAmount: actualAmount,
-        actualPercentage: formatPercentage(actualAmount / totalActIncome)
-      });
-    }
-  });
+//   // Add actual items that don't have a corresponding plan item
+//   Object.keys(actualItemsMap).forEach((parent) => {
+//     if (!planItemsMap[parent]) {
+//       const actualAmount = actualItemsMap[parent].amount;
+//       combinedItems.push({
+//         planParent: '',
+//         planAmount: 0,
+//         planPercentage: formatPercentage(0),
+//         actualParent: parent,
+//         actualAmount: actualAmount,
+//         actualPercentage: formatPercentage(actualAmount / totalActIncome)
+//       });
+//     }
+//   });
 
-  // Add plan items that don't have a corresponding actual item
-  Object.keys(planItemsMap).forEach((parent) => {
-    if (!actualItemsMap[parent]) {
-      const planAmount = planItemsMap[parent].amount;
-      combinedItems.push({
-        planParent: parent,
-        planAmount: planAmount,
-        planPercentage: formatPercentage(planAmount / totalPlanIncome),
-        actualParent: '',
-        actualAmount: 0,
-        actualPercentage: formatPercentage(0)
-      });
-    }
-  });
+//   // Add plan items that don't have a corresponding actual item
+//   Object.keys(planItemsMap).forEach((parent) => {
+//     if (!actualItemsMap[parent]) {
+//       const planAmount = planItemsMap[parent].amount;
+//       combinedItems.push({
+//         planParent: parent,
+//         planAmount: planAmount,
+//         planPercentage: formatPercentage(planAmount / totalPlanIncome),
+//         actualParent: '',
+//         actualAmount: 0,
+//         actualPercentage: formatPercentage(0)
+//       });
+//     }
+//   });
 
-  return combinedItems;
-};
+//   return combinedItems;
+// };

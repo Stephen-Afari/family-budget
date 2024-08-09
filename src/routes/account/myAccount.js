@@ -152,7 +152,7 @@ const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMon
 
 
 
-// console.log(totalPlanIncome)
+//console.log(totalActIncome)
 // console.log(totalActIncome)
 
 //console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome))

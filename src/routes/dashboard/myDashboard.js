@@ -1,17 +1,21 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { DashboardHeader,DashboardIconContainer, DropdownContainer, YearDropdown } from "./myDashboard.styles";
+import { DashboardHeader,DashboardIconContainer, DropdownContainer, PieChartContainer, PieChartContainerPlan, PieChartHeader, YearDropdown } from "./myDashboard.styles";
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, Tooltip, Legend, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import combinedFilteredItems from "../../components/common/combineFIlters";
 import { useEffect, useState } from "react";
 import { years } from "../../components/common/periods";
 import { useSelector } from "react-redux";
-import { selectActualincomes, selectActualIncomeTotalByYear } from "../../store/actualIncome/actualIncome.selector";
-import { selectActualExpenseTotalByYear, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
+import { selectActualincomes, selectActualIncomeTotalByYear, selectActualIncomeTotalByYearAndMonth } from "../../store/actualIncome/actualIncome.selector";
+import { selectActualExpenseTotalByYear, selectActualExpenseTotalByYearAndMonth, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { selectBudgetincomes, selectBudgetIncomeTotalByYear } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByYear } from "../../store/budgetTransactions/budgetTransactions.selector";
+import { months } from "../../components/common/periods";
+//import { years } from "../../components/common/periods";
+
 export const MyDashBoardScreen=()=>{
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
+    const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
     const myActualIncomes = useSelector(selectActualincomes) || [];
     const myActualExpenses = useSelector(selectActualtransactions) || [];
     const myBudgetIncome = useSelector(selectBudgetincomes) || [];
@@ -20,7 +24,8 @@ export const MyDashBoardScreen=()=>{
     //Once the application loads, set the year and month to the ff.
     useEffect(()=>{
       setSelectedYear(new Date().getFullYear());
-      
+     
+      setSelectedMonth('All')
 
     },[])
 
@@ -41,8 +46,11 @@ export const MyDashBoardScreen=()=>{
     const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYear(selectedYear)(state))
     const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYear(selectedYear)(state));
     const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYear(selectedYear)(state));
+    const totalActIncomeByYearAndMonth = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+const totalActExpenseByYearAndMonth = useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+
 //console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome))
-//console.log(filteredPlanIncomes)
+//console.log(totalActIncomeByYearAndMonth)
 
 const combinedIncomes = combinedFilteredItems(filteredPlanIncomes, filteredActualIncomes, totalPlanIncome, totalActIncome);
 const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filteredActualTransactions, totalPlanExpense, totalActExpense);
@@ -52,11 +60,11 @@ const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filtere
     {
     name: item.planParent || item.actualParent,
     Plan: item.planAmount,
-    Actual: item.actualAmount
+    //Actual: item.actualAmount
     }
   ))
-
-  const chartDataPlan = (filtInc)=>{
+///This is for Income/Expense using parent as the key
+  const chartDataDisplay = (filtInc)=>{
    let totalsMap= filtInc.reduce((map,inc)=>{
       if(!map[inc.parent]){
         map[inc.parent]={amount:0}
@@ -71,28 +79,66 @@ const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filtere
  // Convert totalsMap to an array
   let totals = Object.keys(totalsMap).map((item)=>({
     name: item,
-    plan: totalsMap[item].amount,
+    Value: totalsMap[item].amount,
   }))
 
   return totals;
   
   }
 
+  ///This uses SubGrouping as key
+  const chartDataDisplaySubGrp= (filtInc)=>{
+    let totalsMap= filtInc.reduce((map,inc)=>{
+       if(!map[inc.subGroup]){
+         map[inc.subGroup]={amount:0}
+       }
+       //NB: This is not the else part of the code-just the next step.
+         map[inc.subGroup].amount += parseInt(inc.amount);
+       
+      return map;
+ 
+   },{});
+   //  return [totalsMap];
+  // Convert totalsMap to an array
+   let totals = Object.keys(totalsMap).map((item)=>({
+     name: item,
+     Value: totalsMap[item].amount,
+   }))
+ 
+   return totals;
+   
+   }
 
-  console.log(chartDataPlan(filteredActualIncomes))
+
+   
+let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
+ let chartDataActual = chartDataDisplay(filteredActualIncomes);
+ let chartDataExpensePlan = chartDataDisplay(filteredPlanTransactions);
+ let chartDataExpenseActual = chartDataDisplay(filteredActualTransactions);
+ let chartDataSubGrpPlan = chartDataDisplaySubGrp(filteredPlanTransactions);
+ let chartDataSubGrpActual = chartDataDisplaySubGrp(filteredActualTransactions);
+
+
+  //console.log(chartDataSubGrpPlan)
 
 
     // Prepare data for charts
-    const chartDataExp =combinedExpenses.map((item)=>(
-      {
-      name: item.planParent || item.actualParent,
-      Plan: item.planAmount,
-      Actual: item.actualAmount
-      }
-    ))
+    // const chartDataSubGrp =combinedExpenses.map((item)=>(
+    //   {
+    //   name: item.planParent || item.actualParent,
+    //   Plan: item.planAmount,
+    //   Actual: item.actualAmount
+    //   }
+    // ))
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-
+  const renderCustomLabel = ({ percent, x, y, name }) => {
+    return (
+      <text x={x} y={y} fill="black" fontSize="12px" textAnchor="middle" dominantBaseline="central">
+      {`${(percent * 100).toFixed(0)}%`} 
+    </text>
+    );
+  };
 
 
 
@@ -107,8 +153,115 @@ const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filtere
         </YearDropdown>
      
         </DropdownContainer>
+        <PieChartContainer>
+         
+        <div style={{ width: '100%', height: 210 }}>
+        <PieChartHeader>Planned Expense</PieChartHeader>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie 
+            data={chartDataExpensePlan} 
+            dataKey="Value" 
+            nameKey="name" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={80} 
+            fill="#8884d8"
+            label={renderCustomLabel}
+            labelLine={false}
+            >
+              {chartDataExpensePlan.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
 
-        <div style={{ width: '30%', height: 300 }}>
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div style={{ width: '100%', height:230 }}>
+        <PieChartHeader>Planned Expense Detail</PieChartHeader>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie 
+            data={chartDataSubGrpPlan} 
+            dataKey="Value" 
+            nameKey="name" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={80} 
+            fill="#8884d8"
+            label={renderCustomLabel}
+            labelLine={false}
+            >
+              {chartDataSubGrpPlan.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ width: '100%', height: 230}}>
+      <PieChartHeader>Actual Expense</PieChartHeader>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie 
+            data={chartDataExpenseActual} 
+            dataKey="Value" 
+            nameKey="name" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={80} 
+            fill="#8884d8"
+            label={renderCustomLabel}
+            labelLine={false}
+            >
+              {chartDataExpenseActual.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+           
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div style={{ width: '100%', height: 230 }}>
+      <PieChartHeader>Actual Expense Detail</PieChartHeader>
+        <ResponsiveContainer>
+          <PieChart>
+            <Pie 
+            data={chartDataSubGrpActual} 
+            dataKey="Value" 
+            nameKey="name" 
+            cx="50%" 
+            cy="50%" 
+            outerRadius={80} 
+            fill="#8884d8"
+            label={renderCustomLabel}
+            labelLine={false}
+            >
+              {chartDataSubGrpActual.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+           
+            <Tooltip />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+
+        </PieChartContainer>
+       
+
+        <div style={{ width: '30%', height:230}}>
           <h3>Income </h3>
         <ResponsiveContainer>
           <BarChart data={chartData}>
@@ -123,7 +276,7 @@ const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filtere
         </ResponsiveContainer>
       </div>
 
-      <div style={{ width: '30%', height: 300 }}>
+      {/* <div style={{ width: '30%', height: 300 }}>
           <h4>Expense </h4>
         <ResponsiveContainer>
           <BarChart data={chartDataExp}>
@@ -136,26 +289,9 @@ const combinedExpenses = combinedFilteredItems(filteredPlanTransactions, filtere
             <Bar dataKey="Actual" fill="#82ca9d" />
           </BarChart>
         </ResponsiveContainer>
-      </div>
+      </div> */}
 
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie data={chartData} dataKey="Plan" nameKey="name" cx="50%" cy="50%" outerRadius={80} fill="#8884d8">
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            {/* <Pie data={chartData} dataKey="Actual" nameKey="name" cx="50%" cy="50%" innerRadius={90} outerRadius={120} fill="#82ca9d" label>
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie> */}
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
+    
 
 
         </>

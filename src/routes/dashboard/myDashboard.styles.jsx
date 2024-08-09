@@ -22,3 +22,15 @@ export const YearDropdown = styled.select`
  border: none;
  Placeholder:'yyy'
 `;
+
+export const PieChartContainer = styled.div`
+display:flex;
+
+
+`
+export const PieChartHeader = styled.div`
+margin-left: 70px;
+font: 20px;
+font-style: italic;
+
+`
