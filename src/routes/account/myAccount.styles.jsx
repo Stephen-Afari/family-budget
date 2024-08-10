@@ -48,14 +48,16 @@ margin-bottom: 5px;
 export const TableContainer = styled.div`
   width:920px;
 // max-width: 200px;
-overflow-y: auto;
+overflow-y:auto;
 border-radius: 8px;
 padding: 8px;
  background-color:white;
 // height:200px;
 margin-top:30px;
 margin-left: 80px;
+height:460px;
 `;
+
 
 
 export const MyIncomeTable= styled.table`
@@ -265,4 +267,8 @@ font-size:10px;
 
 export const TableBodyContainer=styled.tbody`
 
+`
+
+export const TableBodyContainerExp=styled.tbody`
+overflow-y: scroll;
 `

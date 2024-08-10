@@ -1,6 +1,6 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
+import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableBodyContainerExp, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import combinedFilteredItems from "../../components/common/combineFIlters";
@@ -224,7 +224,7 @@ const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMon
               <TableHead>Var %</TableHead>
             </TableRow>
           </thead>
-          <TableBodyContainer>
+          <TableBodyContainerExp>
             {combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).length > 0 ? (
               combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).map((transaction,index) => (
                 <TableRow1 key={index}>
@@ -242,7 +242,7 @@ const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMon
                 <TableData >No transactions for the selected period</TableData>
               </TableRow>
             )}
-          </TableBodyContainer>
+          </TableBodyContainerExp>
         </MyExpenseTable>
       </TableContainer>
 
