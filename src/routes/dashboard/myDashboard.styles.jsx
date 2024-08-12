@@ -44,9 +44,7 @@ font-weight: bold;
 `
 export const VisualsContainer =styled.div`
 /* If the screen size is 600px wide or less, hide the element */
-@media only screen and (max-width: 600px) {
-  div.example {
+@media only screen and (max-width: 700px) {
     display: none;
-  }
 }
 `
