@@ -158,6 +158,7 @@ return monthlyData;
 
   const monthlyActualIncome = aggregateMonthlyData(filteredActualIncomes);
   const monthlyActualExpenses = aggregateMonthlyData(filteredActualTransactions);
+//console.log(filteredActualTransactions)
 //Prepare data for the Chart
 // new Date(0, index):
 
@@ -202,7 +203,11 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
     </text>
     );
   };
-
+  //// Utility function for currency formatting
+  const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
+    return new Intl.NumberFormat(locale, { style: 'currency', currency,minimumFractionDigits: 0,
+    maximumFractionDigits: 0, }).format(value);
+  };
 
 
     return(
@@ -240,7 +245,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
               ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)}/>
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -266,7 +271,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
               ))}
             </Pie>
 
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)}/>
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -291,7 +296,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
               ))}
             </Pie>
            
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)}/>
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -317,7 +322,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
               ))}
             </Pie>
            
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)}/>
             <Legend />
           </PieChart>
         </ResponsiveContainer>
@@ -330,10 +335,10 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
         <BarChartHeader>Monthly Income vs Expense</BarChartHeader>
         <ResponsiveContainer>
           <BarChart data={barChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
+            {/* <CartesianGrid strokeDasharray="3 3" /> */}
             <XAxis dataKey="month" />
             <YAxis />
-            <Tooltip />
+            <Tooltip formatter={(value) => formatCurrency(value)} />
             <Legend />
             <Bar dataKey="Income" fill="#8884d8" />
             <Bar dataKey="Expense" fill="#82ca9d" />

@@ -24,13 +24,40 @@ const [formData, setFormData]= useState({
     amount: '',
     target:''
 });
+  // State to manage filtered subgroups
+  const [filteredSubGroups, setFilteredSubGroups] = useState([]);
+
 if (!isOpen) return null;
+
+
 
 //spread through previous data and assign the new value to the key in the input box.
 const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    // If the parent is changed, update the filtered subgroups
+    if(name === 'parent'){
+//       console.log('Name:', value);
+// console.log('SubGroups Object:', subGroups);
+// console.log('ParentArray:', subGroups[value]);
+      const newFilteredSubGroups = subGroups[value] || [];
+      setFilteredSubGroups(newFilteredSubGroups);
+      // Reset subGroup selection when parent changes
+      setFormData((prevData) => ({ ...prevData, subGroup: '' }));
+    }
   };
+  const closeModal =()=>{
+    setFormData({
+      date: '',
+      subGroup:'', //Default to the first item in the dropdown
+      parent:'',
+      description:'',
+      amount: '',
+      target:''
+  })
+  onClose();
+  }
 //prevent the form's default behavior of refreshing and set the form data to the state from the parent (ie. onSubmit)
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,7 +82,7 @@ const handleChange = (e) => {
 //The <button> element with type="submit" must be inside a <form> element or associated with a form using the form attribute.
 //When the button is clicked, it automatically triggers the form's submit event.
 return ReactDOM.createPortal(
-<ModalOverlay onClick={onClose}>
+<ModalOverlay onClick={closeModal}>
       <ModalContent onClick={(e) => e.stopPropagation()}>
         <ModalHeader>{heading}</ModalHeader>
         <Form onSubmit={handleSubmit}>
@@ -94,7 +121,7 @@ return ReactDOM.createPortal(
             Group
             <Select name='subGroup' value={formData.subGroup} onChange={handleChange}>
                 <option value='' disabled>select group</option>
-                {subGroups.map((item,index)=>(
+                {filteredSubGroups.map((item,index)=>(
                    <option key={index} value={item}>
                     {item}
                    </option> 
@@ -144,7 +171,7 @@ return ReactDOM.createPortal(
           </FormGroup>
           <ButtonGroup>
           <Button1 type="submit">Submit</Button1>  
-          <Button2 type="button" onClick={onClose}>Close</Button2>
+          <Button2 type="button" onClick={closeModal}>Close</Button2>
           </ButtonGroup>
         </Form> 
        

@@ -9,7 +9,7 @@ import { selectActualincomes, selectActualIncomeTotalByDate } from "../../store/
 import { addIncomeItemToActual, removeIncomeItemFromActual } from "../../store/actualIncome/actualIncome.reducer";
 import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { addItemToActual, removeItemFromActual } from "../../store/actualTransactions/actualTransactions.reducer";
-
+import { subGroups,parents, subGroups_inc, parents_inc } from "../../components/common/parents_subgroups";
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
 // let expenseIdCounter= 0;
@@ -31,10 +31,10 @@ const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
   maximumFractionDigits: 0, }).format(value);
 };
 //arrays for dropdowns
-const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
-const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','supplies','kindness','miscell.']
-const subGroups_inc= ['mthly_sal.-A','mthly_sal.-B','annual_bonus'];
-const parents_inc =['salary-A','salary-B','bonus']
+// const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
+// const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','supplies','kindness','miscell.']
+// const subGroups_inc= ['mthly_sal.-A','mthly_sal.-B','annual_bonus'];
+// const parents_inc =['salary-A','salary-B','bonus']
 
 
 const transactions=[

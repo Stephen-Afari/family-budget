@@ -12,6 +12,7 @@ import { selectIncomeTotal } from "../../store/budgetIncome/budgetIncome.selecto
 import { selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactionByDate, selectBudgettransactions, selectExpenseTotalByDate} from "../../store/budgetTransactions/budgetTransactions.selector";
 import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
+import { parents, parents_inc, subGroups, subGroups_inc } from "../../components/common/parents_subgroups";
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
@@ -33,26 +34,61 @@ const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
   maximumFractionDigits: 0, }).format(value);
 };
 //arrays for dropdowns
-const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
-const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','supplies','kindness','miscell.']
-const subGroups_inc= ['mthly_sal.-A','mthly_sal.-B','annual_bonus'];
-const parents_inc =['salary-A','salary-B','bonus']
+//const subGroups= ['long-term', 'short-term','maint.& repairs','tuition','transport','water','electricity','groceries','fuel','insurance','clothing','grooming','vacation','events','gifts','donation','internet','trash','gas','cleaning','childcare','loans','building','equipment','investment','tv','petty expense','household supplies','miscellaneous'];
+// const parents =['savings','transport','child & educ.','utilities','food','personal care','recreation','parental care','housing','worship','debt repay.','project','family support','investment','household supplies','kindness']
+// //const subGroups_inc= ['mthly_sal.-A','mthly_sal.-B','annual_bonus'];
+// const parents_inc =['salary-A','salary-B']
+
+// const subGroups ={
+//   "savings":['long-term', 'short-term','miscellaneous'],
+//   "transport": ['transportation','fuel','insurance','maint.& repairs','miscellaneous'],
+//   "child & educ.":['childcare','transport','tuition','supplies','miscellaneous'],
+//   "utilities":['electricity','water','gas','internet','trash','tv','miscellaneous'],
+//   "food":['groceries','miscellaneous'],
+//   "personal care":['grooming','clothing','supplies','miscellaneous'],
+//   "recreation":['events','vacation','miscellaneous'],
+//   "parental care":['gifts','insurance','miscellaneous'],
+//   "housing":['maint.& repairs','supplies','cleaning','equipment','miscellaneous'],
+//   "worship":['donation','miscellaneous'],
+//   "debt repay.":['loan','miscellaneous'],
+//   "project":['building','supplies','business','miscellaneous'],
+//   "family support":['donation','supplies','miscellaneous'],
+//   "investment":['business','long-term','miscellaneous'],
+//   "household supplies":['gas','miscellaneous'],
+//   "kindness":['donation','miscellaneous'],
+//   "miscell":['petty expenses'],
+//   "salary-A":['mthly_sal-A','bonuses','miscellaneous'],
+//   "salary-B":['mthly_sal-B','bonuses','miscellaneous']
+// }
+// ;
+
+// const subGroups_inc= {
+
+//   "salary-A":['mthly_sal-A','bonuses','miscellaneous'],
+//   "salary-B":['mthly_sal-B','bonuses','miscellaneous']
+// };
+// const parentSubGroupingMapping =(input)=>{
+//   input.map((parent)=>(
+
+//   ))
+
+// } 
 
 
-const transactions=[
-  {id: 1, date: '06-10-2024', subGroup:'water', parent:'utilities', description:'water bill',amount: 70, target:100},
-  {id: 2, date: '06-10-2024', subGroup:'electricity', parent:'utilities',description:'light bill' ,amount: 700, target:100},
-  {id: 3, date: '06-10-2024', subGroup:'maintenance', parent:'housing', description:'window frame' ,amount: 200, target:100},
-  {id: 4, date: '03-10-2024', subGroup:'fees', parent:'childcare & education', description:'Afia fees' ,amount: 200, target:100},
-]
+// const transactions=[
+//   {id: 1, date: '06-10-2024', subGroup:'water', parent:'utilities', description:'water bill',amount: 70, target:100},
+//   {id: 2, date: '06-10-2024', subGroup:'electricity', parent:'utilities',description:'light bill' ,amount: 700, target:100},
+//   {id: 3, date: '06-10-2024', subGroup:'maintenance', parent:'housing', description:'window frame' ,amount: 200, target:100},
+//   {id: 4, date: '03-10-2024', subGroup:'fees', parent:'childcare & education', description:'Afia fees' ,amount: 200, target:100},
+// ]
 
-const incomes=[
-  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200},
-  {id: 2, date: '05-10-2024', subGroup:'paycheck', parent:'salary',description:'person 2' ,amount: 700, target:200},
-  {id: 3, date: '04-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 1' ,amount: 200, target:200},
-  {id: 4, date: '03-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 2' ,amount: 200, target:200},
-  {id: 5, date: '03-10-2024', subGroup:'windfall', parent:'miscellaneous', description:'windfall' ,amount: 200, target:200},
-]
+// const incomes=[
+//   {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200},
+//   {id: 2, date: '05-10-2024', subGroup:'paycheck', parent:'salary',description:'person 2' ,amount: 700, target:200},
+//   {id: 3, date: '04-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 1' ,amount: 200, target:200},
+//   {id: 4, date: '03-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 2' ,amount: 200, target:200},
+//   {id: 5, date: '03-10-2024', subGroup:'windfall', parent:'miscellaneous', description:'windfall' ,amount: 200, target:200},
+// ]
 
 //Mini NavBar with tabs for the Right Component
 //To achieve the behavior where clicking on a tab displays content below the tab within the right-hand component, you need to manage the routing within the right-hand component itself. This involves keeping the mini navbar and its tab content within the same component structure.
