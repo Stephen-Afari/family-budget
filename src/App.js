@@ -9,9 +9,11 @@ import { MyInvestmentScreen } from "./routes/investment/myInvestment";
 import { MyInsightScreen } from "./routes/insight/myInsight";
 import { MyExportScreen } from "./routes/export/myExport";
 import { MyLogInScreen } from "./routes/logIn/logIn";
+import { fetchAllActualIncomes } from "./api_layer/actuals/actualIncomeApi";
 
 function App() {
   return (
+    //console.log(fetchAllActualIncomes)
 <Routes>
   <Route path="/" element={<Navigation/>}> 
 <Route path='budget' element={<MyBudgetScreen/>}/>

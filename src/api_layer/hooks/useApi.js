@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useApiStatus } from "./useApiStatus";
-import { ERROR, PENDING, SUCCESS } from "../../constants/api-status";
+import { ERROR, PENDING, SUCCESS } from "../constants/api-status";
 
 export function useApi(fn, config = {}) {
   const { initialData } = config;

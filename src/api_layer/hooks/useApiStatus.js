@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { IDLE, defaultApiStatuses } from "../../constants/api-status";
+import { IDLE, defaultApiStatuses } from "../constants/api-status";
 //This function takes a string s, capitalizes its first letter, and returns the modified string.
 const capitalize = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 //This function prepares an object representing the API status in a normalized way. It converts each status from defaultApiStatuses into a boolean value, indicating if the currentStatus matches each individual status.
