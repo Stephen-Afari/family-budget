@@ -1,4 +1,4 @@
-import { Fragment } from "react"
+import { Fragment, useEffect } from "react"
 import { NavContainer,NavContainerAndOutlet, OutletData,Logo,NavLinks,SeparationLine, IconWrapper,HeadingWrapper,IconWrapper1} from "./navigation.styles"
 import { BiSolidPieChartAlt } from "react-icons/bi";
 import { AiOutlineBars } from "react-icons/ai";
@@ -11,7 +11,7 @@ import { CiLogin } from "react-icons/ci";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-
+//import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
 
 
 
@@ -20,6 +20,17 @@ export const Navigation=()=>{
  // State to keep track of the selected item
  const [selectedItem, setSelectedItem] = useState(null);
   
+ //Test the API Layer
+ //console.log('Navigation component rendered'); // Check if this logs
+// useEffect(()=>{
+//     // fetchAllActualIncomes().then((data) => {
+//     //     console.log(data); // This should now log the actual data instead of undefined
+//     //   }).catch((error) => {
+//     //     console.error('Error fetching actual incomes:', error);
+//     //   });
+//     console.log(fetchAllActualIncomes())
+//     },[])
+
  // Handle click event
  const handleItemClick = (id) => {
     if(selectedItem === id){
@@ -33,6 +44,7 @@ export const Navigation=()=>{
 const getItemProp =(id)=>{
     return selectedItem === id ? "true": "false";
 }
+
 
     return(
         <Fragment>
