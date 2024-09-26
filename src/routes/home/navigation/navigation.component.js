@@ -11,25 +11,52 @@ import { CiLogin } from "react-icons/ci";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-//import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
-
+import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
+import { useQuery } from "react-query";
+import { useDispatch, useSelector } from "react-redux";
+import {selectActualApiIncomes}from "../../../store/apiData/actualAPIIncome.selector";
+import {setActualApiIncomes} from "../../../store/apiData/actualAPIIncome.reducer";
 
 
 export const Navigation=()=>{
+const dispatch = useDispatch();
+const selectAllApiIncomes= useSelector(selectActualApiIncomes);
+//Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
+    const {
+        data: actIncomes,
+        isLoading,
+        isSuccess,
+        isError,
+        error
+      } = useQuery("actual_incomes", fetchAllActualIncomes, {
+        onSuccess: (data)=>{
+            // Dispatch Redux action to update the reducer
+            dispatch(setActualApiIncomes(data));
+        }
+      });
 
- // State to keep track of the selected item
+ // State to keep track of the selected item    
  const [selectedItem, setSelectedItem] = useState(null);
   
  //Test the API Layer
- //console.log('Navigation component rendered'); // Check if this logs
-// useEffect(()=>{
-//     // fetchAllActualIncomes().then((data) => {
-//     //     console.log(data); // This should now log the actual data instead of undefined
-//     //   }).catch((error) => {
-//     //     console.error('Error fetching actual incomes:', error);
-//     //   });
-//     console.log(fetchAllActualIncomes())
-//     },[])
+
+useEffect(()=>{
+    
+        console.log(selectAllApiIncomes)
+        //Then, in your component, use React Query to fetch the data, and after it’s fetched, dispatch it to your Redux store:
+    
+    
+    
+    // {isSuccess ? console.log(actIncomes) : null }
+    
+    },[])
+
+  // Display loading, error, or success state
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error: {error.message}</div>;
+
+
+
 
  // Handle click event
  const handleItemClick = (id) => {

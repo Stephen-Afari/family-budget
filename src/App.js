@@ -9,11 +9,15 @@ import { MyInvestmentScreen } from "./routes/investment/myInvestment";
 import { MyInsightScreen } from "./routes/insight/myInsight";
 import { MyExportScreen } from "./routes/export/myExport";
 import { MyLogInScreen } from "./routes/logIn/logIn";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+//React Query requires you to wrap your app with a QueryClientProvider, which provides the QueryClient to your React components. This is necessary to manage and configure queries globally within your application.
+// Create a client
+const queryClient = new QueryClient();
 
 function App() {
   return (
-  
+ <QueryClientProvider client={queryClient}> 
 <Routes>
   <Route path="/" element={<Navigation/>}> 
 <Route path='budget' element={<MyBudgetScreen/>}/>
@@ -26,6 +30,7 @@ function App() {
 <Route path='logIn' element={<MyLogInScreen/>}/>
   </Route>
 </Routes>
+</QueryClientProvider>
   );
 }
 
