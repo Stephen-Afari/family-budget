@@ -31,7 +31,8 @@ const selectAllApiIncomes= useSelector(selectActualApiIncomes);
       } = useQuery("actual_incomes", fetchAllActualIncomes, {
         onSuccess: (data)=>{
             // Dispatch Redux action to update the reducer
-            dispatch(setActualApiIncomes(data));
+            dispatch(setActualApiIncomes(data.data.data));
+           // console.log(selectAllApiIncomes)
         }
       });
 
@@ -39,22 +40,18 @@ const selectAllApiIncomes= useSelector(selectActualApiIncomes);
  const [selectedItem, setSelectedItem] = useState(null);
   
  //Test the API Layer
-
-useEffect(()=>{
-    
-        console.log(selectAllApiIncomes)
-        //Then, in your component, use React Query to fetch the data, and after it’s fetched, dispatch it to your Redux store:
-    
-    
-    
-    // {isSuccess ? console.log(actIncomes) : null }
-    
-    },[])
+// Test the API layer and Redux state changes
+useEffect(() => {
+    if (isSuccess) {
+      console.log('Redux State (actual incomes):', selectAllApiIncomes);
+    }
+  }, [isSuccess, selectAllApiIncomes]);
+// 
 
   // Display loading, error, or success state
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
-
+  console.log(selectAllApiIncomes)
 
 
 
