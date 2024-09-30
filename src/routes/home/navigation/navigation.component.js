@@ -51,7 +51,7 @@ useEffect(() => {
   // Display loading, error, or success state
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
-  console.log(selectAllApiIncomes)
+  //console.log(selectAllApiIncomes)
 
 
 
