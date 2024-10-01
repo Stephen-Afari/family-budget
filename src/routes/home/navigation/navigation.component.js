@@ -14,9 +14,9 @@ import { useState } from "react";
 import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
 import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
-import {selectActualApiIncomes}from "../../../store/apiData/actualAPIIncome.selector";
-import {setActualApiIncomes} from "../../../store/apiData/actualAPIIncome.reducer";
-
+import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
+import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
+import { getUserLogIn } from "../../../api_layer/users/usersApi";
 
 export const Navigation=()=>{
 const dispatch = useDispatch();
@@ -43,9 +43,14 @@ const selectAllApiIncomes= useSelector(selectActualApiIncomes);
 // Test the API layer and Redux state changes
 useEffect(() => {
     if (isSuccess) {
-      console.log('Redux State (actual incomes):', selectAllApiIncomes);
+      //console.log('Redux State (actual incomes):', selectAllApiIncomes);
     }
   }, [isSuccess, selectAllApiIncomes]);
+//Testing login
+  useEffect(()=>{
+let email="demorganafari19@gmail.com", password="test12345"
+console.log(getUserLogIn({email, password}))
+  },[])
 // 
 
   // Display loading, error, or success state

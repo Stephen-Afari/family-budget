@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchAllActualIncomes } from "../../api_layer/actuals/actualIncomeApi";
+import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
 
 export const ACTUALAPIINCOMES_INITIAL_STATE = {
     actualapiincomes: [],
