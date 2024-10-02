@@ -4,9 +4,9 @@ const URLS = {
   logInUserUrl: "users/login",
 };
 
-export const getUserLogIn = async({email,password}, config={}) => {
+export const getUserToken = async({email,password}, config={}) => {
     
-  const response = api.post(URLS.logInUserUrl, 
+  const response = await api.post(URLS.logInUserUrl, 
     JSON.stringify({
         email,
         password,
@@ -16,8 +16,8 @@ export const getUserLogIn = async({email,password}, config={}) => {
         ...config,
       }
      
-  ).then((res) => {
+  );
    
     return response.data;  
-  });
+  ;
 };

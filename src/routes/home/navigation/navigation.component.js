@@ -16,7 +16,7 @@ import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
 import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
-import { getUserLogIn } from "../../../api_layer/users/usersApi";
+import { getUserToken } from "../../../api_layer/users/usersApi";
 
 export const Navigation=()=>{
 const dispatch = useDispatch();
@@ -47,10 +47,22 @@ useEffect(() => {
     }
   }, [isSuccess, selectAllApiIncomes]);
 //Testing login
-  useEffect(()=>{
-let email="demorganafari19@gmail.com", password="test12345"
-console.log(getUserLogIn({email, password}))
-  },[])
+//Since useEffect doesn't directly support asynchronous code, an internal asynchronous function (loginUser) is created and executed inside the useEffect.
+useEffect(() => {
+    const loginUser = async () => {
+      const email = "demorganafari19@gmail.com";
+      const password = "test12345";
+
+      try {
+        const loggedInUser = await getUserToken({ email, password });
+        console.log("Logged in user:", loggedInUser.token); // Handle the user data here
+      } catch (error) {
+        console.error("Login error:", error); // Handle any login errors
+      }
+    };
+
+    loginUser(); // Call the async function inside useEffect
+  }, []);
 // 
 
   // Display loading, error, or success state
