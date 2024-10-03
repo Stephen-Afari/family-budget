@@ -17,10 +17,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
 import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
 import { getUserToken } from "../../../api_layer/users/usersApi";
+import { setUsers } from "../../../store/apiData/users/users.reducer";
+import { selectUser } from "../../../store/apiData/users/users.selector";
 
 export const Navigation=()=>{
 const dispatch = useDispatch();
 const selectAllApiIncomes= useSelector(selectActualApiIncomes);
+//const selectUserAPI = useSelector(selectUser)
 //Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
     const {
         data: actIncomes,
@@ -31,6 +34,7 @@ const selectAllApiIncomes= useSelector(selectActualApiIncomes);
       } = useQuery("actual_incomes", fetchAllActualIncomes, {
         onSuccess: (data)=>{
             // Dispatch Redux action to update the reducer
+           
             dispatch(setActualApiIncomes(data.data.data));
            // console.log(selectAllApiIncomes)
         }
@@ -43,7 +47,7 @@ const selectAllApiIncomes= useSelector(selectActualApiIncomes);
 // Test the API layer and Redux state changes
 useEffect(() => {
     if (isSuccess) {
-      //console.log('Redux State (actual incomes):', selectAllApiIncomes);
+      console.log('Redux State (actual incomes):', selectAllApiIncomes);
     }
   }, [isSuccess, selectAllApiIncomes]);
 //Testing login
@@ -55,7 +59,8 @@ useEffect(() => {
 
       try {
         const loggedInUser = await getUserToken({ email, password });
-        console.log("Logged in user:", loggedInUser.token); // Handle the user data here
+        //console.log("Logged in user:", loggedInUser.token); // Handle the user data here. Dispatch it to the store
+        dispatch(setUsers(loggedInUser.token))
       } catch (error) {
         console.error("Login error:", error); // Handle any login errors
       }
@@ -64,7 +69,7 @@ useEffect(() => {
     loginUser(); // Call the async function inside useEffect
   }, []);
 // 
-
+//console.log(selectUserAPI)
   // Display loading, error, or success state
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error: {error.message}</div>;
