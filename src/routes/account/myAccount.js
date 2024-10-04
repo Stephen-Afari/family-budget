@@ -9,6 +9,10 @@ import { selectActualExpenseTotalByDate, selectActualExpenseTotalByYearAndMonth,
 import { selectBudgetincomes, selectBudgetIncomeTotalByYearAndMonth, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalByYearAndMonth } from "../../store/budgetTransactions/budgetTransactions.selector";
 import { years,months } from "../../components/common/periods";
+import { useQuery } from "react-query";
+import { setActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.reducer";
+import { fetchAllActualIncomes, useToken } from "../../api_layer/actuals/actualIncomeApi";
+import { selectActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
 // const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 // const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -29,7 +33,14 @@ const formatPercentage = (value, locale = 'en-US') => {
 
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
+    //get Token
+const userToken = useToken();
+console.log(userToken)
+  
     const dispatch = useDispatch();
+    //For testing
+    const selectAllApiIncomes= useSelector(selectActualApiIncomes);
+    ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
     
@@ -38,6 +49,38 @@ const formatPercentage = (value, locale = 'en-US') => {
     const myBudgetIncome = useSelector(selectBudgetincomes) || [];
     const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
     const [selectedDate, setSelectedDate]= useState(null);
+
+///////////////////////////////////////////////////
+//Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
+const {
+  data: actIncomes,
+  isLoading,
+  isSuccess,
+  isError,
+  error
+} = useQuery("actual_incomes", fetchAllActualIncomes, {
+  onSuccess: (data)=>{
+      // Dispatch Redux action to update the reducer
+      
+      dispatch(setActualApiIncomes(data.data.data));
+     // console.log(selectAllApiIncomes)
+  }
+});
+//console.log('myTokenTest-', userToken)
+// State to keep track of the selected item    
+//const [selectedItem, setSelectedItem] = useState(null);
+
+//Test the API Layer
+// Test the API layer and Redux state changes
+useEffect(() => {
+if (isSuccess) {
+console.log('Redux State (actual incomes):', selectAllApiIncomes);
+}
+}, [isSuccess, selectAllApiIncomes]);
+//////////////////////////////////////////////////
+
+
+
 //Once the application loads, set the year and month to the ff.
     useEffect(()=>{
       setSelectedYear(new Date().getFullYear());

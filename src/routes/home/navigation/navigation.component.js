@@ -11,7 +11,7 @@ import { CiLogin } from "react-icons/ci";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { fetchAllActualIncomes } from "../../../api_layer/actuals/actualIncomeApi";
+import { fetchAllActualIncomes, useToken } from "../../../api_layer/actuals/actualIncomeApi";
 import { useQuery } from "react-query";
 import { useDispatch, useSelector } from "react-redux";
 import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
@@ -22,34 +22,38 @@ import { selectUser } from "../../../store/apiData/users/users.selector";
 
 export const Navigation=()=>{
 const dispatch = useDispatch();
-const selectAllApiIncomes= useSelector(selectActualApiIncomes);
-//const selectUserAPI = useSelector(selectUser)
-//Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
-    const {
-        data: actIncomes,
-        isLoading,
-        isSuccess,
-        isError,
-        error
-      } = useQuery("actual_incomes", fetchAllActualIncomes, {
-        onSuccess: (data)=>{
-            // Dispatch Redux action to update the reducer
-           
-            dispatch(setActualApiIncomes(data.data.data));
-           // console.log(selectAllApiIncomes)
-        }
-      });
+// const selectAllApiIncomes= useSelector(selectActualApiIncomes);
+//const userToken = useToken();
 
- // State to keep track of the selected item    
+
+
+//const selectUserAPI = useSelector(selectUser)
+// //Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
+//     const {
+//         data: actIncomes,
+//         isLoading,
+//         isSuccess,
+//         isError,
+//         error
+//       } = useQuery("actual_incomes", fetchAllActualIncomes, {
+//         onSuccess: (data)=>{
+//             // Dispatch Redux action to update the reducer
+           
+//             dispatch(setActualApiIncomes(data.data.data));
+//            // console.log(selectAllApiIncomes)
+//         }
+//       });
+//       //console.log('myTokenTest-', userToken)
+//  // State to keep track of the selected item    
  const [selectedItem, setSelectedItem] = useState(null);
   
- //Test the API Layer
-// Test the API layer and Redux state changes
-useEffect(() => {
-    if (isSuccess) {
-      console.log('Redux State (actual incomes):', selectAllApiIncomes);
-    }
-  }, [isSuccess, selectAllApiIncomes]);
+//  //Test the API Layer
+// // Test the API layer and Redux state changes
+// useEffect(() => {
+//     if (isSuccess) {
+//       console.log('Redux State (actual incomes):', selectAllApiIncomes);
+//     }
+//   }, [isSuccess, selectAllApiIncomes]);
 //Testing login
 //Since useEffect doesn't directly support asynchronous code, an internal asynchronous function (loginUser) is created and executed inside the useEffect.
 useEffect(() => {
@@ -68,11 +72,11 @@ useEffect(() => {
 
     loginUser(); // Call the async function inside useEffect
   }, []);
-// 
+
 //console.log(selectUserAPI)
   // Display loading, error, or success state
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error: {error.message}</div>;
+//   if (isLoading) return <div>Loading...</div>;
+//   if (isError) return <div>Error: {error.message}</div>;
   //console.log(selectAllApiIncomes)
 
 
