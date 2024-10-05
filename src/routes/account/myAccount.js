@@ -34,8 +34,8 @@ const formatPercentage = (value, locale = 'en-US') => {
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
     //get Token
-const userToken = useToken();
-console.log(userToken)
+ const userToken = useToken();
+ console.log("testingToken",userToken)
   
     const dispatch = useDispatch();
     //For testing
