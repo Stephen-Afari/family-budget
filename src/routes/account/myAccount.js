@@ -11,8 +11,16 @@ import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalB
 import { years,months } from "../../components/common/periods";
 import { useQuery } from "react-query";
 import { setActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.reducer";
-import { fetchAllActualIncomes, useToken } from "../../api_layer/actuals/actualIncomeApi";
+import { fetchAllActualIncomes } from "../../api_layer/actuals/actualIncomeApi";
 import { selectActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
+import { selectUser } from "../../store/apiData/users/users.selector";
+import { fetchAllActualTransactions } from "../../api_layer/actuals/actualTransactionsApi";
+import { setActualApiTransaction } from "../../store/apiData/actualTransaction/actualAPITransaction.reducer";
+import { selectActualApiTransaction } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
+import { fetchAllBudgetIncomes } from "../../api_layer/budget/budgetIncomeApi";
+import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+import { setBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.reducer";
+
 // const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 // const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
@@ -34,12 +42,23 @@ const formatPercentage = (value, locale = 'en-US') => {
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
     //get Token
- const userToken = useToken();
- console.log("testingToken",userToken)
-  
+const token = useSelector(selectUser)
+//  const userToken = useToken();
+//console.log("testingToken",token)
+const [isReady, setIsReady]= useState(false);
+// Wait for the token to be set
+ useEffect(()=>{
+if(token && Object.keys(token).length>0){
+  setIsReady(true); // Only set ready when token is not empty
+}
+ },[token]);
+
     const dispatch = useDispatch();
-    //For testing
-    const selectAllApiIncomes= useSelector(selectActualApiIncomes);
+    //Selecting API data
+    const actualApiIncomes= useSelector(selectActualApiIncomes);
+    const actualApiTransaction = useSelector(selectActualApiTransaction);
+    const budgetApiIncomes = useSelector(selectBudgetApiIncomes)
+    
     ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
@@ -54,11 +73,13 @@ const formatPercentage = (value, locale = 'en-US') => {
 //Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
 const {
   data: actIncomes,
-  isLoading,
-  isSuccess,
-  isError,
-  error
-} = useQuery("actual_incomes", fetchAllActualIncomes, {
+  isLoading:isLoadingIncomes,
+  isSuccess:isSuccessIncomes,
+  isError:isErrorIncomes ,
+  error:errorIncomes
+} = useQuery("actual_incomes", ()=> fetchAllActualIncomes(token), //Pass a function that React Query will execute when `isReady`
+{
+  enabled: isReady, // Only run query if token is available
   onSuccess: (data)=>{
       // Dispatch Redux action to update the reducer
       
@@ -66,17 +87,78 @@ const {
      // console.log(selectAllApiIncomes)
   }
 });
+
+//When these if statements return early, it skips subsequent React hooks (like useEffect) from being executed, which violates the rule that hooks must always be called in the same order.  
+// Display loading, error, or success state
+// if (isLoading) return <div>Loading...</div>;
+// if (isError) return <div>Error: {error.message}</div>;
 //console.log('myTokenTest-', userToken)
 // State to keep track of the selected item    
 //const [selectedItem, setSelectedItem] = useState(null);
 
-//Test the API Layer
-// Test the API layer and Redux state changes
+//ACTUAL API INCOME
+// Test the API layer and Redux state changes ... 
 useEffect(() => {
-if (isSuccess) {
-console.log('Redux State (actual incomes):', selectAllApiIncomes);
+if (isSuccessIncomes) {
+
+console.log('Redux State (actual incomes):', actualApiIncomes);
 }
-}, [isSuccess, selectAllApiIncomes]);
+}, [isSuccessIncomes, actualApiIncomes]);
+
+//Actual Transaction
+const {
+  data: actTransaction,
+  isLoading:isLoadingTransaction,
+  isSuccess:isSuccessTransaction,
+  isError:isErrorTransaction ,
+  error:errorTransaction
+} = useQuery("actual_incomes", ()=> fetchAllActualTransactions(token), //Pass a function that React Query will execute when `isReady`
+{
+  enabled: isReady, // Only run query if token is available
+  onSuccess: (data)=>{
+      // Dispatch Redux action to update the reducer
+      
+      dispatch(setActualApiTransaction(data.data.data));
+     // console.log(selectAllApiIncomes)
+  }
+});
+// Test the API layer and Redux state changes ... 
+useEffect(() => {
+  if (isSuccessTransaction) {
+  
+  console.log('Redux State (actual transaction):', actualApiTransaction);
+  }
+  }, [isSuccessTransaction,actualApiTransaction]);
+
+//BUDGET INCOME QUERY
+const {
+  data: budgIncomes,
+  isLoading:isLoadingBudgetIncomes,
+  isSuccess:isSuccessBudgetIncomes,
+  isError:isErrorBudgetIncomes,
+  error:errorBudgetIncomes
+} = useQuery("budget_incomes", ()=> fetchAllBudgetIncomes(token), //Pass a function that React Query will execute when `isReady`
+{
+  enabled: isReady, // Only run query if token is available
+  onSuccess: (data)=>{
+      // Dispatch Redux action to update the reducer
+      
+      dispatch(setBudgetApiIncomes(data.data.data));
+     // console.log(selectAllApiIncomes)
+  }
+});
+
+// Test the API layer and Redux state changes ... 
+useEffect(() => {
+  if (isSuccessBudgetIncomes) {
+  
+  console.log('Redux State (budget income):', budgetApiIncomes);
+  }
+  }, [isSuccessTransaction,actualApiTransaction]);
+
+  // Handle loading and error states for each query
+  // if (isLoadingIncomes || isLoadingTransaction)
+  //   return <div>Loading...</div>;
 //////////////////////////////////////////////////
 
 
