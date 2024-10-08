@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 //This is the Base selector to get the actualapiincomes slice from the state
 const selectBudgetApiTransactionReducer = (state) => state.budgetapitransaction;
 
-export const selectActualApiTransaction = createSelector(
+export const selectBudgetApiTransaction = createSelector(
     //selectActualApiincomesReducer: A base selector that returns the budgettransactions slice from the state.
     //selectBudgetincomes: A memoized selector that returns the budgetincomes array from the slice.
     [selectBudgetApiTransactionReducer],
@@ -12,19 +12,19 @@ export const selectActualApiTransaction = createSelector(
 
 
   // Selector to filter incomes by selected date
-export const selectActualApiTransactionByDate = (selectedDate) =>
+export const selectBudgetApiTransactionByDate = (selectedDate) =>
   createSelector(
-    [selectActualApiTransaction],
-    (actualapitransaction) =>
-      actualapitransaction.filter(
+    [selectBudgetApiTransaction],
+    (budgetapitransaction) =>
+      budgetapitransaction.filter(
         (transaction) => new Date(transaction.date).toDateString() === new Date(selectedDate).toDateString()
       )
   );
 
 // Selector to calculate total income for a selected date
-export const selectActualApiTransactionTotalByDate = (selectedDate) =>
+export const selectBudgetApiTransactionTotalByDate = (selectedDate) =>
   createSelector(
-    [selectActualApiTransactionByDate(selectedDate)],
+    [selectBudgetApiTransactionByDate(selectedDate)],
     (filteredTransaction) => filteredTransaction.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 
@@ -41,11 +41,11 @@ const parseDate =(passedDate)=>{
   }
 }
     // Selector to filter budgetincomes by selected year and month
-export const selectActualApiTransactionByYearAndMonth = (selectedYear,selectedMonth, months) =>
+export const selectBudgetApiTransactionByYearAndMonth = (selectedYear,selectedMonth, months) =>
   createSelector(
-    [selectActualApiTransaction],
-    (actualapitransaction) =>
-      actualapitransaction.filter(
+    [selectBudgetApiTransaction],
+    (budgetapitransaction) =>
+      budgetapitransaction.filter(
         
         (transaction) => {
 
@@ -60,19 +60,19 @@ export const selectActualApiTransactionByYearAndMonth = (selectedYear,selectedMo
   );
 
   // Selector to calculate total income for a selected date
-export const selectActualApiTransactionTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
+export const selectBudgetApiTransactionTotalByYearAndMonth = (selectedYear,selectedMonth, months) =>
   createSelector(
-    [selectActualApiTransactionByYearAndMonth(selectedYear,selectedMonth, months)],
+    [selectBudgetApiTransactionByYearAndMonth(selectedYear,selectedMonth, months)],
     (filteredApiTransactionByYearAndMonth) => filteredApiTransactionByYearAndMonth.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 
   ////////////////
      // Selector to filter budgetincomes by selected year and month
-export const selectActualApiTransactionByYear = (selectedYear) =>
+export const selectBudgetApiTransactionByYear = (selectedYear) =>
   createSelector(
-    [selectActualApiTransaction],
-    (actualapitransaction) =>
-      actualapitransaction.filter(
+    [selectBudgetApiTransaction],
+    (budgetapitransaction) =>
+      budgetapitransaction.filter(
         
         (transaction) => {
 
@@ -87,9 +87,9 @@ export const selectActualApiTransactionByYear = (selectedYear) =>
   );
 
   // Selector to calculate total income for a selected date
-export const selectActualApiTransactionTotalByYear = (selectedYear) =>
+export const selectBudgetApiTransactionTotalByYear = (selectedYear) =>
   createSelector(
-    [selectActualApiTransactionByYear(selectedYear)],
+    [selectBudgetApiTransactionByYear(selectedYear)],
     (filteredTransactionByYear) => filteredTransactionByYear.reduce((acc, cur) => acc + parseInt(cur.amount), 0)
   );
 

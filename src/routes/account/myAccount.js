@@ -20,6 +20,9 @@ import { selectActualApiTransaction } from "../../store/apiData/actualTransactio
 import { fetchAllBudgetIncomes } from "../../api_layer/budget/budgetIncomeApi";
 import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
 import { setBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.reducer";
+import { selectBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
+import { setBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.reducers";
+import { fetchAllBudgetTransactions } from "../../api_layer/budget/budgetTransactionsApi";
 
 // const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 // const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -57,7 +60,8 @@ if(token && Object.keys(token).length>0){
     //Selecting API data
     const actualApiIncomes= useSelector(selectActualApiIncomes);
     const actualApiTransaction = useSelector(selectActualApiTransaction);
-    const budgetApiIncomes = useSelector(selectBudgetApiIncomes)
+    const budgetApiIncomes = useSelector(selectBudgetApiIncomes);
+    const budgetApiTransaction= useSelector(selectBudgetApiTransaction);
     
     ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
@@ -155,6 +159,33 @@ useEffect(() => {
   console.log('Redux State (budget income):', budgetApiIncomes);
   }
   }, [isSuccessTransaction,actualApiTransaction]);
+
+  //BUDGET TRANSACTION
+  const {
+    data: budgTransaction,
+    isLoading:isLoadingBudgetTransaction,
+    isSuccess:isSuccessBudgetTransaction,
+    isError:isErrorBudgetTransaction,
+    error:errorBudgetTransaction
+  } = useQuery("budget_transactions", ()=> fetchAllBudgetTransactions(token), //Pass a function that React Query will execute when `isReady`
+  {
+    enabled: isReady, // Only run query if token is available
+    onSuccess: (data)=>{
+        // Dispatch Redux action to update the reducer
+        
+        dispatch(setBudgetApiTransaction(data.data.data));
+       // console.log(selectAllApiIncomes)
+    }
+  });
+  
+  // Test the API layer and Redux state changes ... 
+  useEffect(() => {
+    if (isSuccessBudgetIncomes) {
+    
+    console.log('Redux State (budget transaction):', budgetApiTransaction);
+    }
+    }, [isSuccessTransaction,budgetApiTransaction]);
+  
 
   // Handle loading and error states for each query
   // if (isLoadingIncomes || isLoadingTransaction)
