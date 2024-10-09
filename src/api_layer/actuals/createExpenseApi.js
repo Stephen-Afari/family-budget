@@ -1,7 +1,7 @@
 import api from '../api';
 
 const URLS = {
-    familyUrl: "family",
+    expenseUrl: "acttrxn",
   };
 //  Fetch Data from the Server: Use Axios to make HTTP requests and fetch data from your server.
 //  Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
@@ -10,11 +10,11 @@ const URLS = {
 //You cannot use a hook (eg. useSelector) here because fetchAllActualIncomes is not a
  
 //Create the family to be used in signing up.
-export const createFamily = async({name,token}, config={}) => {
+export const createExpense = async({expenseData,token}, config={}) => {
     
-    const response = await api.post(URLS.familyUrl, 
+    const response = await api.post(URLS.expenseUrl, 
       JSON.stringify({
-          name,
+        expenseData,
         }),
         {
           headers: {

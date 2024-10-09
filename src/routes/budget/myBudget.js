@@ -13,6 +13,9 @@ import { selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.s
 import { selectBudgettransactionByDate, selectBudgettransactions, selectExpenseTotalByDate} from "../../store/budgetTransactions/budgetTransactions.selector";
 import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
 import { parents, parents_inc, subGroups, subGroups_inc } from "../../components/common/parents_subgroups";
+import { useMutation } from "react-query";
+import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpense";
+import { selectUser } from "../../store/apiData/users/users.selector";
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
@@ -285,7 +288,7 @@ onClick={()=>setActiveTab('tab3')}
   )
 }
 
-//Rigth comp
+//Right comp
 const RightComponent1=({selectDate})=>{
   return(
   
@@ -312,7 +315,8 @@ return(
   export const MyBudgetScreen=()=>{
     const [selectedDate, setSelectedDate]= useState(null);
     const dispatch = useDispatch();
- 
+ //Get the token
+ const token = useSelector(selectUser)
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
   const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
@@ -354,6 +358,7 @@ useEffect(() => {
 
  /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
+
  const handleFormSubmit = (data) => {
   // let dataWithId = {...data, id:idCounter++};
   //  setCollectedData(dataWithId);
@@ -370,6 +375,63 @@ useEffect(() => {
  };
  //console.log(incomeIdCounter)
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
+
+ //////////////////////SEND DATA TO DATABASE/////////////////////////////////
+//Create mutation using React Query
+const mutation = useMutation(createBudgetExpense, {
+  onSuccess: (data) => {
+    // Handle successful mutation (e.g., updating Redux store)
+    console.log('Budget Expense data posted',data.data); // Assuming 'data.data' contains the new transaction
+  },
+  onError: (error) => {
+    // Handle error (optional)
+    console.error("Error creating budget expense:", error);
+  },
+});
+
+//  // Example function to trigger the mutation
+ const handleCreateExpense = () => {
+  const expenseData = {
+    "id": 1,
+    "date": "08-10-2024",
+    "subGroup": "Mywater",
+    "parent": "MyutilitiesOS",
+    "description": "water billOS",
+    "amount": 10000,
+    "target": 4000
+}
+   // Ensure token is available before mutating
+   if (token) {
+    mutation.mutate({ expenseData, token });
+  } else {
+    console.error('Token is not available');
+  }
+};
+
+//   // mutation.mutate({ expenseData, token });  // Trigger mutation
+// };
+useEffect(()=>{
+  handleCreateExpense()
+  //console.log(token)
+},[])
+
+ const handleFormSubmit2 = (data) => {
+  // let dataWithId = {...data, id:idCounter++};
+  //  setCollectedData(dataWithId);
+  if(modalHeader==='Add Expense'){
+
+    // createFamily(data,token)
+  // let newId= expenseIdCounter;
+  // setexpenseIdCounter(expenseIdCounter + 1)
+    // dispatch(addItemToBudget({...data, id:newId}))
+  } else{
+    // let newId=incomeIdCounter;
+    // setIncomeIdCounter(incomeIdCounter + 1);
+    // dispatch(addIncomeItemToBudget({...data, id:newId}))
+  }
+    
+ };
+ /////////////////////////////////////////////////////////////////////////
 
 //remove item from budget upon click of the red circle.
 const removeFromBudget =(id)=>{
