@@ -1,7 +1,7 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
 import { BudgetHeader,TabContentContainer,SubGroupIcon,DescriptionIcon,ParentIcon,TabContent,NavBar, RightComponent,NavTab,TableRow1,MyTable,RemoveSymbol,TableData1,HorizontalRule,AddSymbol, GlobalStyle,BudgetIconContainer, MyMiddleComponent,Table, TableHead,TableRow,TableData,TableContainer, DatePickerContainer, IncomeHeader, TabIncAmount, TabIncTotal, TabHeader, TabInc, TabExp, TabAmount, TabAmountContainer, TableBodyContainer, TabListITem, NetIncomeDisplay, BudgetHeaderContainer, BudgetHeaderLeft, NetIncomeAmount} from "./myBudget.styles";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,6 +16,7 @@ import { parents, parents_inc, subGroups, subGroups_inc } from "../../components
 import { useMutation } from "react-query";
 import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpense";
 import { selectUser } from "../../store/apiData/users/users.selector";
+import { createBudgetIncome } from "../../api_layer/budget/createBudgetApiIncome";
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
@@ -317,6 +318,21 @@ return(
     const dispatch = useDispatch();
  //Get the token
  const token = useSelector(selectUser)
+ const [isReady, setIsReady] = useState(false); // Local state to manage readiness
+
+  // Watch for when the token is ready
+// Memoize the token to use the existing one if no new token is available yet
+const memoizedToken = useMemo(() => {
+  return token || localStorage.getItem('existingToken'); // Optionally fallback to a cached token (if saved)
+}, [token]);
+
+// Watch for when the token is ready
+useEffect(() => {
+  if (memoizedToken) {
+    setIsReady(true);
+    localStorage.setItem('existingToken', memoizedToken); // Optionally save the token in localStorage for reuse
+  }
+}, [memoizedToken]);
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
   const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
@@ -359,7 +375,7 @@ useEffect(() => {
  /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
 
- const handleFormSubmit = (data) => {
+const handleFormSubmit = (data) => {
   // let dataWithId = {...data, id:idCounter++};
   //  setCollectedData(dataWithId);
   if(modalHeader==='Add Expense'){
@@ -377,10 +393,11 @@ useEffect(() => {
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
  //////////////////////SEND DATA TO DATABASE/////////////////////////////////
-//Create mutation using React Query
-const mutation = useMutation(createBudgetExpense, {
+//Create mutation for Budget Expene using React Query
+const budgetExpenseMutation = useMutation(createBudgetExpense, {
   onSuccess: (data) => {
     // Handle successful mutation (e.g., updating Redux store)
+    //console.log(token)
     console.log('Budget Expense data posted',data.data); // Assuming 'data.data' contains the new transaction
   },
   onError: (error) => {
@@ -389,6 +406,17 @@ const mutation = useMutation(createBudgetExpense, {
   },
 });
 
+// //Create mutation for Budget Expene using React Query
+// const budgetIncomeMutation = useMutation(createBudgetIncome, {
+//   onSuccess: (data) => {
+//     // Handle successful mutation (e.g., updating Redux store)
+//     console.log('Budget Income data posted',data.data); // Assuming 'data.data' contains the new transaction
+//   },
+//   onError: (error) => {
+//     // Handle error (optional)
+//     console.error("Error creating budget expense:", error);
+//   },
+// });
 //  // Example function to trigger the mutation
  const handleCreateExpense = () => {
   const expenseData = {
@@ -401,8 +429,9 @@ const mutation = useMutation(createBudgetExpense, {
     "target": 4000
 }
    // Ensure token is available before mutating
-   if (token) {
-    mutation.mutate({ expenseData, token });
+   if (isReady && memoizedToken) {
+    console.log('Creating expense with token:', memoizedToken); // 
+    budgetExpenseMutation.mutate({ expenseData, token: memoizedToken });
   } else {
     console.error('Token is not available');
   }
@@ -412,26 +441,28 @@ const mutation = useMutation(createBudgetExpense, {
 // };
 useEffect(()=>{
   handleCreateExpense()
-  //console.log(token)
+  console.log(token)
 },[])
 
- const handleFormSubmit2 = (data) => {
-  // let dataWithId = {...data, id:idCounter++};
-  //  setCollectedData(dataWithId);
-  if(modalHeader==='Add Expense'){
-
-    // createFamily(data,token)
-  // let newId= expenseIdCounter;
-  // setexpenseIdCounter(expenseIdCounter + 1)
-    // dispatch(addItemToBudget({...data, id:newId}))
-  } else{
-    // let newId=incomeIdCounter;
-    // setIncomeIdCounter(incomeIdCounter + 1);
-    // dispatch(addIncomeItemToBudget({...data, id:newId}))
-  }
+//  const handleFormSubmit = (data) => {
+//   // let dataWithId = {...data, id:idCounter++};
+//   //  setCollectedData(dataWithId);
+//   if(modalHeader==='Add Expense'){
+//     budgetExpenseMutation.mutate({ ...data, token });
+//     // createFamily(data,token)
+//   // let newId= expenseIdCounter;
+//   // setexpenseIdCounter(expenseIdCounter + 1)
+//     // dispatch(addItemToBudget({...data, id:newId}))
+//   } else if (modalHeader === 'Add Income'){
+//     budgetIncomeMutation.mutate({ ...data, token });
+//     console.log(data)
+//     // let newId=incomeIdCounter;
+//     // setIncomeIdCounter(incomeIdCounter + 1);
+//     // dispatch(addIncomeItemToBudget({...data, id:newId}))
+//   }
     
- };
- /////////////////////////////////////////////////////////////////////////
+//  };
+ //////////////////////SEND DATA TO DATABASE/////////////////////////////////////
 
 //remove item from budget upon click of the red circle.
 const removeFromBudget =(id)=>{
