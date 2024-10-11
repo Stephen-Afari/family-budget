@@ -322,17 +322,16 @@ return(
 
   // Watch for when the token is ready
 // Memoize the token to use the existing one if no new token is available yet
-const memoizedToken = useMemo(() => {
-  return token || localStorage.getItem('existingToken'); // Optionally fallback to a cached token (if saved)
-}, [token]);
+// const memoizedToken = useMemo(() => {
+//   return token || localStorage.getItem('existingToken'); // Optionally fallback to a cached token (if saved)
+// }, [token]);
 
 // Watch for when the token is ready
 useEffect(() => {
-  if (memoizedToken) {
-    setIsReady(true);
-    localStorage.setItem('existingToken', memoizedToken); // Optionally save the token in localStorage for reuse
+  if (token && Object.keys(token).length > 0) {
+    setIsReady(true); // Only set isReady when token is valid
   }
-}, [memoizedToken]);
+}, [token]);
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
   const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
@@ -375,20 +374,20 @@ useEffect(() => {
  /////////////////////SEND DATA TO REDUCER////////////////////////////////
 
 
-const handleFormSubmit = (data) => {
-  // let dataWithId = {...data, id:idCounter++};
-  //  setCollectedData(dataWithId);
-  if(modalHeader==='Add Expense'){
-  let newId= expenseIdCounter;
-  setexpenseIdCounter(expenseIdCounter + 1)
-    dispatch(addItemToBudget({...data, id:newId}))
-  } else{
-    let newId=incomeIdCounter;
-    setIncomeIdCounter(incomeIdCounter + 1);
-    dispatch(addIncomeItemToBudget({...data, id:newId}))
-  }
+// const handleFormSubmit = (data) => {
+//   // let dataWithId = {...data, id:idCounter++};
+//   //  setCollectedData(dataWithId);
+//   if(modalHeader==='Add Expense'){
+//   let newId= expenseIdCounter;
+//   setexpenseIdCounter(expenseIdCounter + 1)
+//     dispatch(addItemToBudget({...data, id:newId}))
+//   } else{
+//     let newId=incomeIdCounter;
+//     setIncomeIdCounter(incomeIdCounter + 1);
+//     dispatch(addIncomeItemToBudget({...data, id:newId}))
+//   }
     
- };
+//  };
  //console.log(incomeIdCounter)
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
@@ -404,64 +403,76 @@ const budgetExpenseMutation = useMutation(createBudgetExpense, {
     // Handle error (optional)
     console.error("Error creating budget expense:", error);
   },
+  enabled: isReady, // Mutation is enabled only when token is ready
 });
 
 // //Create mutation for Budget Expene using React Query
-// const budgetIncomeMutation = useMutation(createBudgetIncome, {
-//   onSuccess: (data) => {
-//     // Handle successful mutation (e.g., updating Redux store)
-//     console.log('Budget Income data posted',data.data); // Assuming 'data.data' contains the new transaction
-//   },
-//   onError: (error) => {
-//     // Handle error (optional)
-//     console.error("Error creating budget expense:", error);
-//   },
-// });
+const budgetIncomeMutation = useMutation(createBudgetIncome, {
+  onSuccess: (data) => {
+    // Handle successful mutation (e.g., updating Redux store)
+    console.log('Budget Income data posted',data.data); // Assuming 'data.data' contains the new transaction
+  },
+  onError: (error) => {
+    // Handle error (optional)
+    console.error("Error creating budget income:", error);
+  },
+  enabled: isReady, // Mutation is enabled only when token is ready
+});
 //  // Example function to trigger the mutation
- const handleCreateExpense = () => {
-  const expenseData = {
-    "id": 1,
-    "date": "08-10-2024",
-    "subGroup": "Mywater",
-    "parent": "MyutilitiesOS",
-    "description": "water billOS",
-    "amount": 10000,
-    "target": 4000
-}
-   // Ensure token is available before mutating
-   if (isReady && memoizedToken) {
-    console.log('Creating expense with token:', memoizedToken); // 
-    budgetExpenseMutation.mutate({ expenseData, token: memoizedToken });
-  } else {
-    console.error('Token is not available');
-  }
-};
+//  const handleCreateExpense = () => {
+//   const expenseData = {
+//     "id": 1,
+//     "date": "08-10-2024",
+//     "subGroup": "Mywater",
+//     "parent": "MyutilitiesOS",
+//     "description": "water billOS",
+//     "amount": 10000,
+//     "target": 4000
+// }
+//    // Ensure token is available before mutating
+//    if (isReady && token) {
+//     console.log('Creating expense with token:', token); 
+//     budgetExpenseMutation.mutate({ expenseData, token});
+//   } else {
+//     console.error('Token is not available');
+//   }
+// };
 
 //   // mutation.mutate({ expenseData, token });  // Trigger mutation
 // };
-useEffect(()=>{
-  handleCreateExpense()
-  console.log(token)
-},[])
-
-//  const handleFormSubmit = (data) => {
-//   // let dataWithId = {...data, id:idCounter++};
-//   //  setCollectedData(dataWithId);
-//   if(modalHeader==='Add Expense'){
-//     budgetExpenseMutation.mutate({ ...data, token });
-//     // createFamily(data,token)
-//   // let newId= expenseIdCounter;
-//   // setexpenseIdCounter(expenseIdCounter + 1)
-//     // dispatch(addItemToBudget({...data, id:newId}))
-//   } else if (modalHeader === 'Add Income'){
-//     budgetIncomeMutation.mutate({ ...data, token });
-//     console.log(data)
-//     // let newId=incomeIdCounter;
-//     // setIncomeIdCounter(incomeIdCounter + 1);
-//     // dispatch(addIncomeItemToBudget({...data, id:newId}))
+// useEffect(()=>{
+//   if(isReady){
+//     handleCreateExpense()
+//     console.log(token)
 //   }
+
+// },[])
+
+ const handleFormSubmit = (data) => {
+  //let token1='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTI4NGEyM2FiN2U0N2JlNGFkMzg2NSIsImlhdCI6MTcyODU0OTAzNywiZXhwIjoxNzM2MzI1MDM3fQ.OIMO-gESMRWpxB1xoFoUjR72TaDnJk1r6NW-Wlf9bM0'
+   // Check if token is ready before submitting the form
+  //  if (!isReady || !token) {
+  //   console.error("Token is not ready, cannot submit the form.");
+  //   return;
+  // }
+  // let dataWithId = {...data, id:idCounter++};
+  //  setCollectedData(dataWithId);
+  if(modalHeader==='Add Expense'){
+    // budgetExpenseMutation.mutate({ data, token });
+    // console.log('data posted', data); 
+    // createFamily(data,token)
+  // let newId= expenseIdCounter;
+  // setexpenseIdCounter(expenseIdCounter + 1)
+    // dispatch(addItemToBudget({...data, id:newId}))
+  } else if (modalHeader === 'Add Income'){
+    budgetIncomeMutation.mutate({ data});
+    console.log(data)
+    // let newId=incomeIdCounter;
+    // setIncomeIdCounter(incomeIdCounter + 1);
+    // dispatch(addIncomeItemToBudget({...data, id:newId}))
+  }
     
-//  };
+ };
  //////////////////////SEND DATA TO DATABASE/////////////////////////////////////
 
 //remove item from budget upon click of the red circle.
