@@ -34,7 +34,10 @@ if (!isOpen) return null;
 //spread through previous data and assign the new value to the key in the input box.
 const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData((prevData) => ({ ...prevData, 
+      //Check if the name is "amount" or "target", and convert to number if true
+    [name]: (name === "amount" || name === "target") ? parseFloat(value) || '' : value
+       }));
 
     // If the parent is changed, update the filtered subgroups
     if(name === 'parent'){

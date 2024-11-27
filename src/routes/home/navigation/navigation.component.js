@@ -17,11 +17,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
 import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
 import { getUserToken } from "../../../api_layer/users/usersApi";
-import { setUsers } from "../../../store/apiData/users/users.reducer";
-import { selectUser } from "../../../store/apiData/users/users.selector";
+import { fetchUserToken, setUsers } from "../../../store/apiData/users/users.reducer";
+import { selectUser, selectUserToken } from "../../../store/apiData/users/users.selector";
 
 export const Navigation=()=>{
 const dispatch = useDispatch();
+// const token1 = useSelector(selectUserToken)
+// const { token, loading, error } = useSelector((state) => state.users);
 // const selectAllApiIncomes= useSelector(selectActualApiIncomes);
 //const userToken = useToken();
 
@@ -56,22 +58,31 @@ const dispatch = useDispatch();
 //   }, [isSuccess, selectAllApiIncomes]);
 //Testing login
 //Since useEffect doesn't directly support asynchronous code, an internal asynchronous function (loginUser) is created and executed inside the useEffect.
-useEffect(() => {
-    const loginUser = async () => {
-      const email = "demorganafari19@gmail.com";
-      const password = "test12345";
+// useEffect(() => {
+//     const loginUser = async () => {
+//       const email = "demorganafari19@gmail.com";
+//       const password = "test12345";
 
-      try {
-        const loggedInUser = await getUserToken({ email, password });
-        //console.log("Logged in user:", loggedInUser.token); // Handle the user data here. Dispatch it to the store
-        dispatch(setUsers(loggedInUser.token))
-      } catch (error) {
-        console.error("Login error:", error); // Handle any login errors
-      }
-    };
+//       try {
+//         const loggedInUser = await getUserToken({ email, password });
+//         //console.log("Logged in user:", loggedInUser.token); // Handle the user data here. Dispatch it to the store
+//         dispatch(setUsers(loggedInUser.token))
+//       } catch (error) {
+//         console.error("Login error:", error); // Handle any login errors
+//       }
+//     };
 
-    loginUser(); // Call the async function inside useEffect
-  }, []);
+//     loginUser(); // Call the async function inside useEffect
+//   }, []);
+// useEffect(() => {
+    
+//   const credentials = { email: "demorganafari19@gmail.com", password: "test12345" };
+  
+//   dispatch(fetchUserToken(credentials));
+//   console.log('dispatched')
+// }, [dispatch]);
+
+//console.log(token1)
 
 //console.log(selectUserAPI)
   // Display loading, error, or success state
@@ -89,6 +100,7 @@ useEffect(() => {
     } else {
         setSelectedItem(id)
     }
+   
  };
 
 const getItemProp =(id)=>{
@@ -114,7 +126,7 @@ const getItemProp =(id)=>{
 <NavLinks to='/investment' isselected={getItemProp('4')} onClick={()=>handleItemClick('4')}><IconWrapper><RiRefund2Fill /> </IconWrapper>Investment</NavLinks>
 <NavLinks to='/insight' isselected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks>
 <NavLinks to='/export' isselected={getItemProp('6')} onClick={()=>handleItemClick('6')}><IconWrapper><CiExport /> </IconWrapper>Export</NavLinks>
-<NavLinks to='/logIn' isselected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogIn</NavLinks>
+<NavLinks to='/logIn' isselected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogOut</NavLinks>
  </NavContainer>
     <OutletData>
     <Outlet/>

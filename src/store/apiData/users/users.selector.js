@@ -8,3 +8,8 @@ export const selectUser = createSelector(
     [selectUsersReducer],
     (usersSlice) => usersSlice.users
   );
+// Selector to get the token from the user object
+export const selectUserToken = createSelector(
+  [selectUsersReducer],
+  (user) => user.token
+);

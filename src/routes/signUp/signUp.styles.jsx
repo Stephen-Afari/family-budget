@@ -12,6 +12,8 @@ export const Container = styled.div`
 export const FormWrapper = styled.div`
   background: #fff;
   padding: 2rem;
+// padding-top: 0rem;
+padding-bottom: 0.5rem;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   max-width: 400px;
@@ -21,7 +23,8 @@ export const FormWrapper = styled.div`
 export const Title = styled.h1`
   text-align: center;
   color: #333;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
+  font-size: 15px;
 `;
 
 export const Form = styled.form`
@@ -34,10 +37,6 @@ export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
 `;
-export const TextGroup = styled.div`
-text-align: center;
-color: #333;
-`
 
 export const Label = styled.label`
   margin-bottom: 0.5rem;
