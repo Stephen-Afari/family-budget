@@ -18,6 +18,8 @@ import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpen
 import { createBudgetIncome } from "../../api_layer/budget/createBudgetApiIncome";
 import { selectUserToken } from "../../store/apiData/users/users.selector";
 
+import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
 // let expenseIdCounter= 0;
@@ -317,10 +319,11 @@ return(
     const [selectedDate, setSelectedDate]= useState(null);
     const dispatch = useDispatch();
  //Get the token
- const token = useSelector(selectUserToken)
- //console.log(token)
-const [isReady, setIsReady] = useState(false); // Local state to manage readiness
-console.log(token)
+ const token = useSelector(selectUserToken);
+ const BudgIncomeTest = useSelector(selectBudgetApiIncomes)
+ console.log(BudgIncomeTest)
+// const [isReady, setIsReady] = useState(false); // Local state to manage readiness
+// console.log(token)
   // Watch for when the token is ready
 // Memoize the token to use the existing one if no new token is available yet
 // const memoizedToken = useMemo(() => {
@@ -328,13 +331,13 @@ console.log(token)
 // }, [token]);
 
 // Watch for when the token is ready
-useEffect(() => {
-  if (token && Object.keys(token).length > 0) {
+// useEffect(() => {
+//   if (token && Object.keys(token).length > 0) {
  
-    setIsReady(true); // Only set isReady when token is valid
-  console.log('isReady:',isReady, token)
-  }
-}, [token]);
+//     setIsReady(true); // Only set isReady when token is valid
+//   console.log('isReady:',isReady, token)
+//   }
+// }, [token]);
       //interact with the data from the reducer
   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
   const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
@@ -395,7 +398,41 @@ const handleFormSubmit = (data) => {
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
  //////////////////////SEND DATA TO DATABASE/////////////////////////////////
-//Create mutation for Budget Expene using React Query
+ ////Create mutation for Budget Expense using React Query
+ const budgetIncomeMutation = useMutation(createBudgetIncome, {
+  onSuccess: (data) => {
+    console.log("Budget Income data posted", data.data);
+  },
+  onError: (error) => {
+    console.error("Error creating budget income:", error.response?.data || error.message);
+  },
+});
+// useEffect(()=>{
+//   if(token){
+//     handleCreateIncome();
+//   }
+// },[])
+
+const handleCreateIncome = () => {
+  if (!token) {
+    console.error("Token is not available");
+    return;
+  }
+
+  const incomeData = {
+    date: "2024-10-12",
+    subGroup: "monthly_salary",
+    parent: "salary",
+    description: "October salary",
+    amount: 1000,
+    target: 1200,
+  };
+
+  budgetIncomeMutation.mutate({ incData: incomeData, token });
+};
+
+
+//Create mutation for Budget Expense using React Query
 // const budgetExpenseMutation = useMutation(createBudgetExpense, {
 //   onSuccess: (data) => {
 //     // Handle successful mutation (e.g., updating Redux store)
@@ -409,8 +446,8 @@ const handleFormSubmit = (data) => {
 
 // });
 
-// //Create mutation for Budget Expene using React Query
-// const budgetIncomeMutation /= useMutation(createBudgetIncome, {
+// // //Create mutation for Budget Expene using React Query
+// const budgetIncomeMutation = useMutation(createBudgetIncome, {
 //   onSuccess: (data) => {
 //     // Handle successful mutation (e.g., updating Redux store)
 //     console.log('Budget Income data posted',data.data); // Assuming 'data.data' contains the new transaction
@@ -421,6 +458,17 @@ const handleFormSubmit = (data) => {
 //   },
  
 // });
+
+// const incomeData = {
+//   date: "2024-10-12",
+//   subGroup: "monthly_salary",
+//   parent: "salary",
+//   description: "October salary",
+//   amount: 1000,
+//   target: 1200,
+// };
+
+// budgetIncomeMutation.mutate({ incData: incomeData, token });
 
 //  // Example function to trigger the mutation
 //  const handleCreateExpense = () => {
@@ -454,28 +502,28 @@ const handleFormSubmit = (data) => {
 
 // },[])
 //console.log(token)
-useEffect(()=>{
-  const postExpense= async()=>{
-    const expData = {
-      "id": 1,
-      "date": "07-10-2024",
-      "subGroup": "water",
-      "parent": "utilitiesOS",
-      "description": "water billOS",
-      "amount": 2000,
-      "target": 3000
-  }
+// useEffect(()=>{
+//   const postExpense= async()=>{
+//     const expData = {
+//       "id": 1,
+//       "date": "07-10-2024",
+//       "subGroup": "water",
+//       "parent": "utilitiesOS",
+//       "description": "water billOS",
+//       "amount": 2000,
+//       "target": 3000
+//   }
 
-let res = await createBudgetExpense({expenseData:expData, token})
-console.log('results:',res)
-  }
+// let res = await createBudgetExpense({expenseData:expData, token})
+// console.log('results:',res)
+//   }
 
-  if(isReady){
-    postExpense()
+//   if(isReady){
+//     postExpense()
     
-  }
+//   }
 
-},[])
+// },[])
 
 //  const handleFormSubmit = (data) => {
 //   //let token1='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTI4NGEyM2FiN2U0N2JlNGFkMzg2NSIsImlhdCI6MTcyODU0OTAzNywiZXhwIjoxNzM2MzI1MDM3fQ.OIMO-gESMRWpxB1xoFoUjR72TaDnJk1r6NW-Wlf9bM0'
@@ -505,7 +553,7 @@ console.log('results:',res)
 //   }
     
 //  };
- //////////////////////SEND DATA TO DATABASE/////////////////////////////////////
+//////////////////////SEND DATA TO DATABASE/////////////////////////////////////
 
 //remove item from budget upon click of the red circle.
 const removeFromBudget =(id)=>{

@@ -23,6 +23,7 @@ import { setBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPII
 import { selectBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
 import { setBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.reducers";
 import { fetchAllBudgetTransactions } from "../../api_layer/budget/budgetTransactionsApi";
+import { selectUserToken } from "../../store/apiData/users/users.selector";
 
 // const years = [2022, 2023, 2024,2025,2026,2027,2028,2029,2030];
 // const months = ['All', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -45,7 +46,7 @@ const formatPercentage = (value, locale = 'en-US') => {
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
     //get Token
-const token = useSelector(selectUser)
+const token = useSelector(selectUserToken)
 //  const userToken = useToken();
 //console.log("testingToken",token)
 const [isReady, setIsReady]= useState(false);
@@ -62,7 +63,7 @@ if(token && Object.keys(token).length>0){
     const actualApiTransaction = useSelector(selectActualApiTransaction);
     const budgetApiIncomes = useSelector(selectBudgetApiIncomes);
     const budgetApiTransaction= useSelector(selectBudgetApiTransaction);
-    
+    console.log('Budget_Trxn',budgetApiTransaction);
     ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
@@ -79,7 +80,7 @@ const {
   data: actIncomes,
   isLoading:isLoadingIncomes,
   isSuccess:isSuccessIncomes,
-  isError:isErrorIncomes ,
+  isError:isErrorIncomes,
   error:errorIncomes
 } = useQuery("actual_incomes", ()=> fetchAllActualIncomes(token), //Pass a function that React Query will execute when `isReady`
 {
@@ -88,7 +89,7 @@ const {
       // Dispatch Redux action to update the reducer
       
       dispatch(setActualApiIncomes(data.data.data));
-     // console.log(selectAllApiIncomes)
+     //console.log(data.data.data);
   }
 });
 
@@ -134,57 +135,15 @@ useEffect(() => {
   }
   }, [isSuccessTransaction,actualApiTransaction]);
 
-//BUDGET INCOME QUERY
-const {
-  data: budgIncomes,
-  isLoading:isLoadingBudgetIncomes,
-  isSuccess:isSuccessBudgetIncomes,
-  isError:isErrorBudgetIncomes,
-  error:errorBudgetIncomes
-} = useQuery("budget_incomes", ()=> fetchAllBudgetIncomes(token), //Pass a function that React Query will execute when `isReady`
-{
-  enabled: isReady, // Only run query if token is available
-  onSuccess: (data)=>{
-      // Dispatch Redux action to update the reducer
-      
-      dispatch(setBudgetApiIncomes(data.data.data));
-     // console.log(selectAllApiIncomes)
-  }
-});
 
-// Test the API layer and Redux state changes ... 
-useEffect(() => {
-  if (isSuccessBudgetIncomes) {
-  
-  console.log('Redux State (budget income):', budgetApiIncomes);
-  }
-  }, [isSuccessTransaction,actualApiTransaction]);
-
-  //BUDGET TRANSACTION
-  const {
-    data: budgTransaction,
-    isLoading:isLoadingBudgetTransaction,
-    isSuccess:isSuccessBudgetTransaction,
-    isError:isErrorBudgetTransaction,
-    error:errorBudgetTransaction
-  } = useQuery("budget_transactions", ()=> fetchAllBudgetTransactions(token), //Pass a function that React Query will execute when `isReady`
-  {
-    enabled: isReady, // Only run query if token is available
-    onSuccess: (data)=>{
-        // Dispatch Redux action to update the reducer
-        
-        dispatch(setBudgetApiTransaction(data.data.data));
-       // console.log(selectAllApiIncomes)
-    }
-  });
   
   // Test the API layer and Redux state changes ... 
-  useEffect(() => {
-    if (isSuccessBudgetIncomes) {
+  // useEffect(() => {
+  //   if (isSuccessBudgetIncomes) {
     
-    console.log('Redux State (budget transaction):', budgetApiTransaction);
-    }
-    }, [isSuccessTransaction,budgetApiTransaction]);
+  //   console.log('Redux State (budget transaction):', budgetApiTransaction);
+  //   }
+  //   }, [isSuccessTransaction,budgetApiTransaction]);
   
 
   // Handle loading and error states for each query
