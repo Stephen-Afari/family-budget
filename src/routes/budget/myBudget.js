@@ -321,7 +321,7 @@ return(
  //Get the token
  const token = useSelector(selectUserToken);
  const BudgIncomeTest = useSelector(selectBudgetApiIncomes)
- console.log(BudgIncomeTest)
+ //console.log(BudgIncomeTest)
 // const [isReady, setIsReady] = useState(false); // Local state to manage readiness
 // console.log(token)
   // Watch for when the token is ready
@@ -387,10 +387,13 @@ const handleFormSubmit = (data) => {
   let newId= expenseIdCounter;
   setexpenseIdCounter(expenseIdCounter + 1)
     dispatch(addItemToBudget({...data, id:newId}))
+    //test
+    budgetIncomeMutation.mutate({ incData: data, token });
   } else{
     let newId=incomeIdCounter;
     setIncomeIdCounter(incomeIdCounter + 1);
-    dispatch(addIncomeItemToBudget({...data, id:newId}))
+    dispatch(addIncomeItemToBudget({...data, id:newId}));
+    budgetIncomeMutation.mutate({ incData: data, token });
   }
    
  };
@@ -413,23 +416,23 @@ const handleFormSubmit = (data) => {
 //   }
 // },[])
 
-const handleCreateIncome = () => {
-  if (!token) {
-    console.error("Token is not available");
-    return;
-  }
+// const handleCreateIncome = () => {
+//   if (!token) {
+//     console.error("Token is not available");
+//     return;
+//   }
 
-  const incomeData = {
-    date: "2024-10-12",
-    subGroup: "monthly_salary",
-    parent: "salary",
-    description: "October salary",
-    amount: 1000,
-    target: 1200,
-  };
+//   const incomeData = {
+//     date: "2024-10-12",
+//     subGroup: "monthly_salary",
+//     parent: "salary",
+//     description: "October salary",
+//     amount: 1000,
+//     target: 1200,
+//   };
 
-  budgetIncomeMutation.mutate({ incData: incomeData, token });
-};
+//   budgetIncomeMutation.mutate({ incData: incomeData, token });
+// };
 
 
 //Create mutation for Budget Expense using React Query

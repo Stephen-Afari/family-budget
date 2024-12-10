@@ -5,11 +5,16 @@ import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetA
 import { useToken } from "./hooks/useToken";
 import { setBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.reducer";
 import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 
 export const BudgetIncomeFetcher=()=>{
 const token = useToken();
-// const dispatch = useDispatch();
+// const [isReady, setIsReady]= useState(false);
+const dispatch = useDispatch();
+// if(token){
+//   setIsReady(true);
+// }
 //BUDGET INCOME QUERY
 const {
     data: budgIncomes,
@@ -19,7 +24,7 @@ const {
     error:errorBudgetIncomes
   } = useQuery("budget_incomes", ()=> fetchAllBudgetIncomes(token), //Pass a function that React Query will execute when `isReady`
   {
-    enabled: isReady, // Only run query if token is available
+    //enabled: token, // Only run query if token is available
     onSuccess: (data)=>{
         // Dispatch Redux action to update the reducer
         

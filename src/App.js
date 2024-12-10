@@ -13,6 +13,7 @@ import { AuthScreen } from "./routes/authScreen/authscreen";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { selectUserToken } from "./store/apiData/users/users.selector";
 import { useSelector } from "react-redux";
+import { BudgetIncomeFetcher } from "./components/common/fetchBudgetIncome";
 
 //React Query requires you to wrap your app with a QueryClientProvider, which provides the QueryClient to your React components. This is necessary to manage and configure queries globally within your application.
 // Create a client
@@ -32,7 +33,9 @@ function App() {
  <Route path="/logIn" element={<AuthScreen />} />
 
   {/* All other routes are protected */}
-  <Route path="/" element={<PrivateRoute><Navigation /></PrivateRoute>} >
+  <Route path="/" element={<PrivateRoute>
+    <BudgetIncomeFetcher/>
+    <Navigation /></PrivateRoute>} >
 <Route path='budget' element={<MyBudgetScreen/>}/>
 <Route path='transactions' element={<MyTransactionScreen/>}/>
 <Route path='account' element={<MyAccountScreen/>}/>

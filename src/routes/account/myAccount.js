@@ -63,7 +63,7 @@ if(token && Object.keys(token).length>0){
     const actualApiTransaction = useSelector(selectActualApiTransaction);
     const budgetApiIncomes = useSelector(selectBudgetApiIncomes);
     const budgetApiTransaction= useSelector(selectBudgetApiTransaction);
-    console.log('Budget_Trxn',budgetApiTransaction);
+    //console.log('Budg_Inc',budgetApiIncomes);
     ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
@@ -75,65 +75,7 @@ if(token && Object.keys(token).length>0){
     const [selectedDate, setSelectedDate]= useState(null);
 
 ///////////////////////////////////////////////////
-//Use React Query to Manage Data Fetching and Caching: React Query will handle the data fetching, caching, and error/loading states.
-const {
-  data: actIncomes,
-  isLoading:isLoadingIncomes,
-  isSuccess:isSuccessIncomes,
-  isError:isErrorIncomes,
-  error:errorIncomes
-} = useQuery("actual_incomes", ()=> fetchAllActualIncomes(token), //Pass a function that React Query will execute when `isReady`
-{
-  enabled: isReady, // Only run query if token is available
-  onSuccess: (data)=>{
-      // Dispatch Redux action to update the reducer
-      
-      dispatch(setActualApiIncomes(data.data.data));
-     //console.log(data.data.data);
-  }
-});
 
-//When these if statements return early, it skips subsequent React hooks (like useEffect) from being executed, which violates the rule that hooks must always be called in the same order.  
-// Display loading, error, or success state
-// if (isLoading) return <div>Loading...</div>;
-// if (isError) return <div>Error: {error.message}</div>;
-//console.log('myTokenTest-', userToken)
-// State to keep track of the selected item    
-//const [selectedItem, setSelectedItem] = useState(null);
-
-//ACTUAL API INCOME
-// Test the API layer and Redux state changes ... 
-useEffect(() => {
-if (isSuccessIncomes) {
-
-console.log('Redux State (actual incomes):', actualApiIncomes);
-}
-}, [isSuccessIncomes, actualApiIncomes]);
-
-//Actual Transaction
-const {
-  data: actTransaction,
-  isLoading:isLoadingTransaction,
-  isSuccess:isSuccessTransaction,
-  isError:isErrorTransaction ,
-  error:errorTransaction
-} = useQuery("actual_incomes", ()=> fetchAllActualTransactions(token), //Pass a function that React Query will execute when `isReady`
-{
-  enabled: isReady, // Only run query if token is available
-  onSuccess: (data)=>{
-      // Dispatch Redux action to update the reducer
-      
-      dispatch(setActualApiTransaction(data.data.data));
-     // console.log(selectAllApiIncomes)
-  }
-});
-// Test the API layer and Redux state changes ... 
-useEffect(() => {
-  if (isSuccessTransaction) {
-  
-  console.log('Redux State (actual transaction):', actualApiTransaction);
-  }
-  }, [isSuccessTransaction,actualApiTransaction]);
 
 
   
