@@ -387,12 +387,14 @@ const handleFormSubmit = (data) => {
   let newId= expenseIdCounter;
   setexpenseIdCounter(expenseIdCounter + 1)
     dispatch(addItemToBudget({...data, id:newId}))
-    //test
-    budgetIncomeMutation.mutate({ incData: data, token });
+    //This mutation, sends the data to the database
+    budgetExpenseMutation.mutate({ expenseData: data, token });
+    console.log(data)
   } else{
     let newId=incomeIdCounter;
     setIncomeIdCounter(incomeIdCounter + 1);
     dispatch(addIncomeItemToBudget({...data, id:newId}));
+    //This mutation, sends the data to the database
     budgetIncomeMutation.mutate({ incData: data, token });
   }
    
@@ -401,15 +403,26 @@ const handleFormSubmit = (data) => {
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
  //////////////////////SEND DATA TO DATABASE/////////////////////////////////
- ////Create mutation for Budget Expense using React Query
+ ////Create mutation for Budget Income using React Query
  const budgetIncomeMutation = useMutation(createBudgetIncome, {
   onSuccess: (data) => {
-    console.log("Budget Income data posted", data.data);
+    //console.log("Budget Income data posted", data.data);
   },
   onError: (error) => {
     console.error("Error creating budget income:", error.response?.data || error.message);
   },
 });
+
+//Budget Expense
+const budgetExpenseMutation = useMutation(createBudgetExpense, {
+  onSuccess: (data) => {
+    //console.log("Budget Expense data posted", data.data);
+  },
+  onError: (error) => {
+    console.error("Error creating budget expense:", error.response?.data || error.message);
+  },
+});
+
 // useEffect(()=>{
 //   if(token){
 //     handleCreateIncome();
