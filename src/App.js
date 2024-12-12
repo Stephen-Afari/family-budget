@@ -14,6 +14,9 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { selectUserToken } from "./store/apiData/users/users.selector";
 import { useSelector } from "react-redux";
 import { BudgetIncomeFetcher } from "./components/common/fetchBudgetIncome";
+import { ActualTransactionFetcher } from "./components/common/fetchActualTransaction";
+import { BudgetTransactionFetcher } from "./components/common/fetchBudgetTransaction";
+import { ActualIncomeFetcher } from "./components/common/fetchActualIncome";
 
 //React Query requires you to wrap your app with a QueryClientProvider, which provides the QueryClient to your React components. This is necessary to manage and configure queries globally within your application.
 // Create a client
@@ -34,7 +37,11 @@ function App() {
 
   {/* All other routes are protected */}
   <Route path="/" element={<PrivateRoute>
-    <BudgetIncomeFetcher/>
+  {/* fetch data here */}
+  <ActualIncomeFetcher/>
+  <BudgetTransactionFetcher/>
+   <ActualTransactionFetcher/>
+    <BudgetIncomeFetcher/>  
     <Navigation /></PrivateRoute>} >
 <Route path='budget' element={<MyBudgetScreen/>}/>
 <Route path='transactions' element={<MyTransactionScreen/>}/>

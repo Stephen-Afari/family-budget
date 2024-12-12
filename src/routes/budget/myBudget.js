@@ -18,7 +18,8 @@ import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpen
 import { createBudgetIncome } from "../../api_layer/budget/createBudgetApiIncome";
 import { selectUserToken } from "../../store/apiData/users/users.selector";
 
-import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+import { selectBudgetApiIncomes, selectBudgetApiIncomeTotalByDate } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+import { selectBudgetApiTransaction, selectBudgetApiTransactionTotalByDate } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
@@ -102,20 +103,31 @@ const MiniNavbar =({selectProp})=>{
   const [activeTab, setActiveTab]= useState('tab1');
 //data from the store
   const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+  const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
  const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectProp)(state));
  const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectProp)(state))
- const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
-//console.log(totalExpense)
+
+
+ //From API
+ const myAPIBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+ const myAPIBudgetTransaction= useSelector(selectBudgetApiTransaction) || [];
+ const totalAPIIncome = useSelector((state)=>selectBudgetApiIncomeTotalByDate(selectProp)(state));
+ const totalAPIExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
+ (selectProp)(state))
+ 
+ 
+// console.log('API budget Income', myAPIBudgetIncome);
+// console.log('API budget Trxn', myAPIBudgetTransaction);
 //filter inc
 let filteredInc = selectProp ? 
-myBudgetIncome.filter((inc)=>{
+myAPIBudgetIncome.filter((inc)=>{
   return new Date(inc.date).toString()=== selectProp.toString()}
 )
 :[]
 
 //filter exp
 let filteredExp = selectProp ? 
-myBudgetTransaction.filter((exp)=>{
+myAPIBudgetTransaction.filter((exp)=>{
   return new Date(exp.date).toString()=== selectProp.toString()}
 )
 :[]
