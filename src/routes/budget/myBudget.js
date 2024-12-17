@@ -102,32 +102,38 @@ const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
 const MiniNavbar =({selectProp})=>{
   const [activeTab, setActiveTab]= useState('tab1');
 //data from the store
-  const myBudgetIncome = useSelector(selectBudgetincomes) || [];
-  const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
- const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectProp)(state));
- const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectProp)(state))
-
+//   const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+//   const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+//  const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectProp)(state));
+//  const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectProp)(state))
+const myBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+const myBudgetTransaction= useSelector(selectBudgetApiTransaction) || [];
+const totalIncome = useSelector((state)=>selectBudgetApiIncomeTotalByDate(selectProp)(state));
+const totalExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
+(selectProp)(state));
 
  //From API
- const myAPIBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
- const myAPIBudgetTransaction= useSelector(selectBudgetApiTransaction) || [];
- const totalAPIIncome = useSelector((state)=>selectBudgetApiIncomeTotalByDate(selectProp)(state));
- const totalAPIExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
- (selectProp)(state))
+//  const myAPIBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+//  const myAPIBudgetTransaction= useSelector(selectBudgetApiTransaction) || [];
+//  const totalAPIIncome = useSelector((state)=>selectBudgetApiIncomeTotalByDate(selectProp)(state));
+//  const totalAPIExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
+//  (selectProp)(state));
+//  console.log('totalAPI_Income', totalAPIIncome);
+//  console.log('totalAPI_Expense',totalAPIExpense);
  
  
-// console.log('API budget Income', myAPIBudgetIncome);
+//console.log('API budget Income', myAPIBudgetIncome);
 // console.log('API budget Trxn', myAPIBudgetTransaction);
 //filter inc
 let filteredInc = selectProp ? 
-myAPIBudgetIncome.filter((inc)=>{
+myBudgetIncome.filter((inc)=>{
   return new Date(inc.date).toString()=== selectProp.toString()}
 )
 :[]
 
 //filter exp
 let filteredExp = selectProp ? 
-myAPIBudgetTransaction.filter((exp)=>{
+myBudgetTransaction.filter((exp)=>{
   return new Date(exp.date).toString()=== selectProp.toString()}
 )
 :[]
@@ -351,11 +357,17 @@ return(
 //   }
 // }, [token]);
       //interact with the data from the reducer
-  const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
-  const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
-  const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
-  const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+      // const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+      // const totalIncome = useSelector((state)=>selectIncomeTotalByDate(selectedDate)(state));
+      // const totalExpense = useSelector((state)=>selectExpenseTotalByDate(selectedDate)(state))
+      // const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+      const myBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+      const myBudgetTransaction= useSelector(selectBudgetApiTransaction) || [];
+      const totalIncome = useSelector((state)=>selectBudgetApiIncomeTotalByDate(selectedDate)(state));
+      const totalExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
+      (selectedDate)(state));
  // const totalIncome = useSelector(selectIncomeTotal);
+ 
 
 
  ////////////MODAL DETAILS///////////////////////////////
@@ -398,14 +410,14 @@ const handleFormSubmit = (data) => {
   if(modalHeader==='Add Expense'){
   let newId= expenseIdCounter;
   setexpenseIdCounter(expenseIdCounter + 1)
-    dispatch(addItemToBudget({...data, id:newId}))
+    //dispatch(addItemToBudget({...data, id:newId}))
     //This mutation, sends the data to the database
     budgetExpenseMutation.mutate({ expenseData: data, token });
-    console.log(data)
+    //console.log(data)
   } else{
     let newId=incomeIdCounter;
     setIncomeIdCounter(incomeIdCounter + 1);
-    dispatch(addIncomeItemToBudget({...data, id:newId}));
+    //dispatch(addIncomeItemToBudget({...data, id:newId}));
     //This mutation, sends the data to the database
     budgetIncomeMutation.mutate({ incData: data, token });
   }
