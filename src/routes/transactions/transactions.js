@@ -10,6 +10,13 @@ import { addIncomeItemToActual, removeIncomeItemFromActual } from "../../store/a
 import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { addItemToActual, removeItemFromActual } from "../../store/actualTransactions/actualTransactions.reducer";
 import { subGroups,parents, subGroups_inc, parents_inc } from "../../components/common/parents_subgroups";
+import { useMutation } from "react-query";
+import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpense";
+import { createIncome } from "../../api_layer/actuals/createIncomeApi";
+import { selectUserToken } from "../../store/apiData/users/users.selector";
+import { createExpense } from "../../api_layer/actuals/createExpenseApi";
+import { selectActualApiIncomes, selectActualApiIncomeTotalByDate } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
+import { selectActualApiTransaction, selectActualApiTransactionTotalByDate } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
 // let expenseIdCounter= 0;
@@ -37,20 +44,20 @@ const formatCurrency = (value, locale = 'en-GH', currency = 'GHS') => {
 // const parents_inc =['salary-A','salary-B','bonus']
 
 
-const transactions=[
-  {id: 1, date: '06-10-2024', subGroup:'water', parent:'utilities', description:'water bill',amount: 70, target:100},
-  {id: 2, date: '06-10-2024', subGroup:'electricity', parent:'utilities',description:'light bill' ,amount: 700, target:100},
-  {id: 3, date: '06-10-2024', subGroup:'maintenance', parent:'housing', description:'window frame' ,amount: 200, target:100},
-  {id: 4, date: '03-10-2024', subGroup:'fees', parent:'childcare & education', description:'Afia fees' ,amount: 200, target:100},
-]
+// const transactions=[
+//   {id: 1, date: '06-10-2024', subGroup:'water', parent:'utilities', description:'water bill',amount: 70, target:100},
+//   {id: 2, date: '06-10-2024', subGroup:'electricity', parent:'utilities',description:'light bill' ,amount: 700, target:100},
+//   {id: 3, date: '06-10-2024', subGroup:'maintenance', parent:'housing', description:'window frame' ,amount: 200, target:100},
+//   {id: 4, date: '03-10-2024', subGroup:'fees', parent:'childcare & education', description:'Afia fees' ,amount: 200, target:100},
+// ]
 
-const incomes=[
-  {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200},
-  {id: 2, date: '05-10-2024', subGroup:'paycheck', parent:'salary',description:'person 2' ,amount: 700, target:200},
-  {id: 3, date: '04-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 1' ,amount: 200, target:200},
-  {id: 4, date: '03-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 2' ,amount: 200, target:200},
-  {id: 5, date: '03-10-2024', subGroup:'windfall', parent:'miscellaneous', description:'windfall' ,amount: 200, target:200},
-]
+// const incomes=[
+//   {id: 1, date: '06-10-2024', subGroup:'paycheck', parent:'salary', description:'person 1',amount: 70, target:200},
+//   {id: 2, date: '05-10-2024', subGroup:'paycheck', parent:'salary',description:'person 2' ,amount: 700, target:200},
+//   {id: 3, date: '04-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 1' ,amount: 200, target:200},
+//   {id: 4, date: '03-10-2024', subGroup:'paycheck', parent:'bonus', description:'person 2' ,amount: 200, target:200},
+//   {id: 5, date: '03-10-2024', subGroup:'windfall', parent:'miscellaneous', description:'windfall' ,amount: 200, target:200},
+// ]
 
 
 //Mini NavBar with tabs for the Right Component
@@ -58,11 +65,16 @@ const incomes=[
 const MiniNavbar =({selectProp})=>{
   const [activeTab, setActiveTab]= useState('tab1');
 //data from the store
-  const myActualIncome = useSelector(selectActualincomes) || [];
- const totalIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectProp)(state));
- const totalExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectProp)(state))
- const myActualTransaction = useSelector(selectActualtransactions) || [];
-//console.log(totalExpense)
+  //const myActualIncome = useSelector(selectActualincomes) || [];
+ //const totalIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectProp)(state));
+ //const totalExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectProp)(state))
+ //const myActualTransaction = useSelector(selectActualtransactions) || [];
+
+ const myActualIncome = useSelector(selectActualApiIncomes) || [];
+ const myActualTransaction = useSelector(selectActualApiTransaction) || [];
+ const totalIncome = useSelector((state)=>selectActualApiIncomeTotalByDate(selectProp)(state));
+ const totalExpense = useSelector((state)=>selectActualApiTransactionTotalByDate(selectProp)(state))
+//console.log('actual_Api_Incomes',myActualIncome1);
 //filter inc
 let filteredInc = selectProp ? 
 myActualIncome.filter((inc)=>{
@@ -275,15 +287,22 @@ return(
   
   export const MyTransactionScreen=()=>{
     const [selectedDate, setSelectedDate]= useState(null);
-
+    const token = useSelector(selectUserToken);
     const dispatch = useDispatch();
  
     //interact with the data from the reducer
 // const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
-const totalIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedDate)(state));
-const totalExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state))
-const myActualIncome = useSelector(selectActualincomes) || [];
-const myActualTransaction = useSelector(selectActualtransactions) || [];
+//const totalIncome = useSelector((state)=>selectActualIncomeTotalByDate(selectedDate)(state));
+//const totalExpense = useSelector((state)=>selectActualExpenseTotalByDate(selectedDate)(state))
+//const myActualIncome = useSelector(selectActualincomes) || [];
+//const myActualTransaction = useSelector(selectActualtransactions) || [];
+
+const myActualIncome = useSelector(selectActualApiIncomes) || [];
+ const myActualTransaction = useSelector(selectActualApiTransaction) || [];
+ const totalIncome = useSelector((state)=>selectActualApiIncomeTotalByDate(selectedDate)(state));
+ const totalExpense = useSelector((state)=>selectActualApiTransactionTotalByDate(selectedDate)(state))
+
+
 const [expenseIdCounter, setExpenseIdCounter] = useState(()=>{return parseInt(localStorage.getItem('expenseIdCounter')) || 0});
 const [incomeIdCounter, setIncomeIdCounter] = useState(()=>{ return parseInt(localStorage.getItem('incomeIdCounter')) || 0});
 ////Use useEffect to save the counter value to localStorage whenever it changes.
@@ -334,14 +353,43 @@ useEffect(()=>{
   if(modalHeader==='Add Expense'){
     let newId=expenseIdCounter;
     setExpenseIdCounter(expenseIdCounter + 1)
-    dispatch(addItemToActual({...data, id:newId}))
+    dispatch(addItemToActual({...data, id:newId}));
+    actualExpenseMutation.mutate({ expenseData: data, token });
+    console.log(data)
   } else{
     let newId = incomeIdCounter;
     setIncomeIdCounter(incomeIdCounter + 1)
-    dispatch(addIncomeItemToActual({...data, id:newId}))
+    dispatch(addIncomeItemToActual({...data, id:newId}));
+    actualIncomeMutation.mutate({ incData: data, token });
+    console.log(data)
   }
   handleCloseModal(); // Close modal after submitting
  };
+
+ ////////////////SEND DATA TO DATABASE///////////////
+////Create mutation for Budget EXPENSE using React Query
+//Budget Expense
+ ////Create mutation for Budget Income using React Query
+ const actualIncomeMutation = useMutation(createIncome, {
+  onSuccess: (data) => {
+    console.log("Budget Income data posted", data.data);
+  },
+  onError: (error) => {
+    console.error("Error creating actual income:", error.response?.data || error.message);
+  },
+});
+
+//Budget Expense
+const actualExpenseMutation = useMutation(createExpense, {
+  onSuccess: (data) => {
+    console.log("Budget Expense data posted", data.data);
+  },
+  onError: (error) => {
+    console.error("Error creating actual expense:", error.response?.data || error.message);
+  },
+});
+
+ ////////////////////////////////////////////////////
 
  //console.log(incomeIdCounter)
 

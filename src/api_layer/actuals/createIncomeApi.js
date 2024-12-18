@@ -10,21 +10,41 @@ const URLS = {
 //You cannot use a hook (eg. useSelector) here because fetchAllActualIncomes is not a
  
 //Create the family to be used in signing up.
-export const createIncome = async({incData,token}, config={}) => {
+// export const createIncome = async({incData,token}, config={}) => {
     
-    const response = await api.post(URLS.incomeUrl, 
-      JSON.stringify({
-        incData,
-        }),
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
-          },
-          ...config,
-        }
+//     const response = await api.post(URLS.incomeUrl, 
+//       JSON.stringify(
+//         incData,
+//         ),
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+//           },
+//           ...config,
+//         }
        
-    );
+//     );
      
-      return response.data;  
-    ;
-  };
+//       return response.data;  
+//     ;
+//   };
+
+  export const createIncome = async({incData,token}, config={}) => {
+    //let token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZTI4NGEyM2FiN2U0N2JlNGFkMzg2NSIsImlhdCI6MTcyODU0OTQ1MiwiZXhwIjoxNzM2MzI1NDUyfQ.42AMCexxkGKhPGZMf0TUbMZvvavWBd2ATCfpFjKQNA4'
+      const response = await api.post(URLS.incomeUrl, 
+        JSON.stringify(
+          incData,
+          ),
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+              "Content-Type": "application/json", // Set the content type to JSON
+            },
+            ...config,
+          }
+         
+      );
+       
+        return response.data;  
+      ;
+    };

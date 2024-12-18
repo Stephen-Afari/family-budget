@@ -13,12 +13,13 @@ const URLS = {
 export const createExpense = async({expenseData,token}, config={}) => {
     
     const response = await api.post(URLS.expenseUrl, 
-      JSON.stringify({
+      JSON.stringify(
         expenseData,
-        }),
+        ),
         {
           headers: {
             Authorization: `Bearer ${token}`, // Attach the token to the Authorization header
+            "Content-Type": "application/json", // Set the content type to JSON
           },
           ...config,
         }

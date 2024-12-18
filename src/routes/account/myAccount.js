@@ -12,15 +12,15 @@ import { years,months } from "../../components/common/periods";
 import { useQuery } from "react-query";
 import { setActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.reducer";
 import { fetchAllActualIncomes } from "../../api_layer/actuals/actualIncomeApi";
-import { selectActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
+import { selectActualApiIncomes, selectActualApiIncomeTotalByYearAndMonth } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
 import { selectUser } from "../../store/apiData/users/users.selector";
 import { fetchAllActualTransactions } from "../../api_layer/actuals/actualTransactionsApi";
 import { setActualApiTransaction } from "../../store/apiData/actualTransaction/actualAPITransaction.reducer";
-import { selectActualApiTransaction } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
+import { selectActualApiTransaction, selectActualApiTransactionTotalByYearAndMonth } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
 import { fetchAllBudgetIncomes } from "../../api_layer/budget/budgetIncomeApi";
-import { selectBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+import { selectBudgetApiIncomes, selectBudgetApiIncomeTotalByYearAndMonth } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
 import { setBudgetApiIncomes } from "../../store/apiData/budgetIncome/budgetAPIIncome.reducer";
-import { selectBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
+import { selectBudgetApiTransaction, selectBudgetApiTransactionTotalByYearAndMonth } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
 import { setBudgetApiTransaction } from "../../store/apiData/budgetTransaction/budgetAPITransaction.reducers";
 import { fetchAllBudgetTransactions } from "../../api_layer/budget/budgetTransactionsApi";
 import { selectUserToken } from "../../store/apiData/users/users.selector";
@@ -68,10 +68,15 @@ if(token && Object.keys(token).length>0){
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
     
-    const myActualIncomes = useSelector(selectActualincomes) || [];
-    const myActualExpenses = useSelector(selectActualtransactions) || [];
-    const myBudgetIncome = useSelector(selectBudgetincomes) || [];
-    const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+    //const myActualIncomes = useSelector(selectActualincomes) || [];
+    //const myActualExpenses = useSelector(selectActualtransactions) || [];
+    //const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+    //const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+
+    const myActualIncomes = useSelector(selectActualApiIncomes) || [];
+    const myActualExpenses = useSelector(selectActualApiTransaction) || [];
+    const myBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+    const myBudgetTransaction = useSelector(selectBudgetApiTransaction) || [];
     const [selectedDate, setSelectedDate]= useState(null);
 
 ///////////////////////////////////////////////////
@@ -135,10 +140,17 @@ const filteredActualIncomes = filterDataByYearAndMonth(myActualIncomes,selectedY
 const filteredActualTransactions = filterDataByYearAndMonth(myActualExpenses,selectedYear, selectedMonth);
 const filteredPlanIncomes = filterDataByYearAndMonth(myBudgetIncome,selectedYear, selectedMonth);
 const filteredPlanTransactions = filterDataByYearAndMonth(myBudgetTransaction,selectedYear, selectedMonth);
-  const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
- const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
-const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
-const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+
+  //const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
+ //const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
+//const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+//const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+
+const totalPlanIncome = useSelector((state)=>selectBudgetApiIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
+ const totalPlanExpense = useSelector((state)=>selectBudgetApiTransactionTotalByYearAndMonth(selectedYear, selectedMonth,months)(state))
+const totalActIncome = useSelector((state)=>selectActualApiIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+const totalActExpense= useSelector((state)=>selectActualApiTransactionTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
+
 //  //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
 
 // //Flattening a result typically means taking a nested structure and reducing it to a simpler, one-level structure. In the context of arrays, it means converting an array of arrays into a single array that contains all the elements of the nested arrays.

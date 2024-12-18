@@ -338,7 +338,7 @@ return(
     const dispatch = useDispatch();
  //Get the token
  const token = useSelector(selectUserToken);
- const BudgIncomeTest = useSelector(selectBudgetApiIncomes)
+ //const BudgIncomeTest = useSelector(selectBudgetApiIncomes)
  //console.log(BudgIncomeTest)
 // const [isReady, setIsReady] = useState(false); // Local state to manage readiness
 // console.log(token)
@@ -420,6 +420,7 @@ const handleFormSubmit = (data) => {
     //dispatch(addIncomeItemToBudget({...data, id:newId}));
     //This mutation, sends the data to the database
     budgetIncomeMutation.mutate({ incData: data, token });
+    //console.log(data);
   }
    
  };
