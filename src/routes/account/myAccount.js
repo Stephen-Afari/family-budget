@@ -46,23 +46,23 @@ const formatPercentage = (value, locale = 'en-US') => {
   //This is the Budget vs Actual Page
   export const MyAccountScreen=()=>{
     //get Token
-const token = useSelector(selectUserToken)
-//  const userToken = useToken();
-//console.log("testingToken",token)
-const [isReady, setIsReady]= useState(false);
-// Wait for the token to be set
- useEffect(()=>{
-if(token && Object.keys(token).length>0){
-  setIsReady(true); // Only set ready when token is not empty
-}
- },[token]);
+// const token = useSelector(selectUserToken)
+// //  const userToken = useToken();
+// //console.log("testingToken",token)
+// const [isReady, setIsReady]= useState(false);
+// // Wait for the token to be set
+//  useEffect(()=>{
+// if(token && Object.keys(token).length>0){
+//   setIsReady(true); // Only set ready when token is not empty
+// }
+//  },[token]);
 
     const dispatch = useDispatch();
     //Selecting API data
-    const actualApiIncomes= useSelector(selectActualApiIncomes);
-    const actualApiTransaction = useSelector(selectActualApiTransaction);
-    const budgetApiIncomes = useSelector(selectBudgetApiIncomes);
-    const budgetApiTransaction= useSelector(selectBudgetApiTransaction);
+    // const actualApiIncomes= useSelector(selectActualApiIncomes);
+    // const actualApiTransaction = useSelector(selectActualApiTransaction);
+    // const budgetApiIncomes = useSelector(selectBudgetApiIncomes);
+    // const budgetApiTransaction= useSelector(selectBudgetApiTransaction);
     //console.log('Budg_Inc',budgetApiIncomes);
     ///////////////
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());

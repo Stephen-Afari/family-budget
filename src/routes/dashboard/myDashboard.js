@@ -11,15 +11,25 @@ import { selectActualExpenseTotalByYear, selectActualExpenseTotalByYearAndMonth,
 import { selectBudgetincomes, selectBudgetIncomeTotalByYear } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByYear } from "../../store/budgetTransactions/budgetTransactions.selector";
 import { months } from "../../components/common/periods";
+import { selectActualApiIncomes, selectActualApiIncomeTotalByYear } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
+import { selectActualApiTransaction, selectActualApiTransactionTotalByYear } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
+import { selectBudgetApiIncomes, selectBudgetApiIncomeTotalByYear } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
+import { selectBudgetApiTransaction, selectBudgetApiTransactionTotalByYear } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
 //import { years } from "../../components/common/periods";
 
 export const MyDashBoardScreen=()=>{
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
-    const myActualIncomes = useSelector(selectActualincomes) || [];
-    const myActualExpenses = useSelector(selectActualtransactions) || [];
-    const myBudgetIncome = useSelector(selectBudgetincomes) || [];
-    const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+
+    //const myActualIncomes = useSelector(selectActualincomes) || [];
+    //const myActualExpenses = useSelector(selectActualtransactions) || [];
+    //const myBudgetIncome = useSelector(selectBudgetincomes) || [];
+    // const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
+
+    const myActualIncomes = useSelector(selectActualApiIncomes) || [];
+    const myActualExpenses = useSelector(selectActualApiTransaction) || [];
+    const myBudgetIncome = useSelector(selectBudgetApiIncomes) || [];
+    const myBudgetTransaction = useSelector(selectBudgetApiTransaction) || [];
   
     //Once the application loads, set the year and month to the ff.
     useEffect(()=>{
@@ -42,13 +52,19 @@ export const MyDashBoardScreen=()=>{
     const filteredActualTransactions = filterDataByYear(myActualExpenses,selectedYear);
     const filteredPlanIncomes = filterDataByYear(myBudgetIncome,selectedYear);
     const filteredPlanTransactions = filterDataByYear(myBudgetTransaction,selectedYear);
-     const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYear(selectedYear)(state))
-    const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYear(selectedYear)(state))
-    const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYear(selectedYear)(state));
-    const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYear(selectedYear)(state));
+    
+     //const totalPlanIncome = useSelector((state)=>selectBudgetIncomeTotalByYear(selectedYear)(state))
+   // const totalPlanExpense = useSelector((state)=>selectExpenseTotalByYear(selectedYear)(state))
+    //const totalActIncome = useSelector((state)=>selectActualIncomeTotalByYear(selectedYear)(state));
+    //const totalActExpense= useSelector((state)=>selectActualExpenseTotalByYear(selectedYear)(state));
     const totalActIncomeByYearAndMonth = useSelector((state)=>selectActualIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
 const totalActExpenseByYearAndMonth = useSelector((state)=>selectActualExpenseTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
 
+
+const totalPlanIncome = useSelector((state)=>selectBudgetApiIncomeTotalByYear(selectedYear)(state))
+const totalPlanExpense = useSelector((state)=>selectBudgetApiTransactionTotalByYear(selectedYear)(state))
+const totalActIncome = useSelector((state)=>selectActualApiIncomeTotalByYear(selectedYear)(state));
+const totalActExpense= useSelector((state)=>selectActualApiTransactionTotalByYear(selectedYear)(state));
 //console.log(combinedFilteredItems(filteredPlanIncomes,filteredActualIncomes,totalPlanIncome,totalActIncome))
 //console.log(totalActIncomeByYearAndMonth)
 
@@ -225,7 +241,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
        
         <PieChartContainer>
          
-        <div style={{ width: '100%', height: 210 }}>
+        <div style={{ width: '100%', height: 244 }}>
         <PieChartHeader>Planned Expense</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -251,7 +267,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
         </ResponsiveContainer>
       </div>
 
-      <div style={{ width: '100%', height:230 }}>
+      <div style={{ width: '100%', height:244 }}>
         <PieChartHeader>Planned Expense Detail</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -276,7 +292,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div style={{ width: '100%', height: 230}}>
+      <div style={{ width: '100%', height: 244}}>
       <PieChartHeader>Actual Expense</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -302,7 +318,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
         </ResponsiveContainer>
       </div>
 
-      <div style={{ width: '100%', height: 230 }}>
+      <div style={{ width: '100%', height: 244 }}>
       <PieChartHeader>Actual Expense Detail</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>

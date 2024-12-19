@@ -15,13 +15,14 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { selectActualApiTransaction } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
 
 
   
   export const MyInvestmentScreen=()=>{
     const [selectedYear, setSelectedYear]= useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth]= useState(new Date().getMonth());
-    const myActualExpenses = useSelector(selectActualtransactions) || [];
+    const myActualExpenses = useSelector(selectActualApiTransaction) || [];
 
     useEffect(()=>{
       setSelectedYear(new Date().getFullYear())
