@@ -3,7 +3,8 @@ import axios from "axios";
 const axiosParams = {
   // Base URL should be set via environment
   baseURL:
-    process.env.NODE_ENV === "development" ? "http://localhost:5000/api/v1/" : "/",
+    process.env.NODE_ENV === "development" ? "http://localhost:5000/api/v1/" : "https://family-budget-backend.onrender.com",
+    //https://family-budget-backend.onrender.com
 };
 //This line of code creates a new instance of Axios with custom configuration options defined by axiosParams.
 const axiosInstance = axios.create(axiosParams);
