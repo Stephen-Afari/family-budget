@@ -1,27 +1,27 @@
-import { Fragment, useEffect } from "react"
+import { Fragment } from "react"
 import { NavContainer,NavContainerAndOutlet, OutletData,Logo,NavLinks,SeparationLine, IconWrapper,HeadingWrapper,IconWrapper1} from "./navigation.styles"
 import { BiSolidPieChartAlt } from "react-icons/bi";
 import { AiOutlineBars } from "react-icons/ai";
 import { MdOutlineOtherHouses } from "react-icons/md";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 import { RiRefund2Fill } from "react-icons/ri";
-import { GiArtificialIntelligence } from "react-icons/gi";
+//import { GiArtificialIntelligence } from "react-icons/gi";
 import { CiExport } from "react-icons/ci";
 import { CiLogin } from "react-icons/ci";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import { fetchAllActualIncomes, useToken } from "../../../api_layer/actuals/actualIncomeApi";
-import { useQuery } from "react-query";
-import { useDispatch, useSelector } from "react-redux";
-import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
-import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
-import { getUserToken } from "../../../api_layer/users/usersApi";
-import { fetchUserToken, setUsers } from "../../../store/apiData/users/users.reducer";
-import { selectUser, selectUserToken } from "../../../store/apiData/users/users.selector";
+// import { fetchAllActualIncomes, useToken } from "../../../api_layer/actuals/actualIncomeApi";
+// import { useQuery } from "react-query";
+//import { useDispatch } from "react-redux";
+// import {selectActualApiIncomes}from "../../../store/apiData/actualIncome/actualAPIIncome.selector";
+// import {setActualApiIncomes} from "../../../store/apiData/actualIncome/actualAPIIncome.reducer";
+// import { getUserToken } from "../../../api_layer/users/usersApi";
+// import { fetchUserToken, setUsers } from "../../../store/apiData/users/users.reducer";
+// import { selectUser, selectUserToken } from "../../../store/apiData/users/users.selector";
 
 export const Navigation=()=>{
-const dispatch = useDispatch();
+//const dispatch = useDispatch();
 // const token1 = useSelector(selectUserToken)
 // const { token, loading, error } = useSelector((state) => state.users);
 // const selectAllApiIncomes= useSelector(selectActualApiIncomes);
@@ -124,7 +124,7 @@ const getItemProp =(id)=>{
 <NavLinks to='/account' isselected={getItemProp('2')} onClick={()=>handleItemClick('2')}> <IconWrapper><MdOutlineOtherHouses /> </IconWrapper>Budget vs Actual</NavLinks>
 <NavLinks to='/dashboard' isselected={getItemProp('3')}onClick={()=>handleItemClick('3')}><IconWrapper><TbBrandGoogleAnalytics /> </IconWrapper>Dashboard</NavLinks>
 <NavLinks to='/investment' isselected={getItemProp('4')} onClick={()=>handleItemClick('4')}><IconWrapper><RiRefund2Fill /> </IconWrapper>Investment</NavLinks>
-<NavLinks to='/insight' isselected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks>
+{/* <NavLinks to='/insight' isselected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks> */}
 <NavLinks to='/export' isselected={getItemProp('6')} onClick={()=>handleItemClick('6')}><IconWrapper><CiExport /> </IconWrapper>Export</NavLinks>
 <NavLinks to='/logIn' isselected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogOut</NavLinks>
  </NavContainer>
