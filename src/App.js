@@ -22,17 +22,17 @@ import { logoutUser, setUsers } from "./store/apiData/users/users.reducer";
 
 //React Query requires you to wrap your app with a QueryClientProvider, which provides the QueryClient to your React components. This is necessary to manage and configure queries globally within your application.
 // Create a client
-// const queryClient = new QueryClient();
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: true, // Still refetch when coming back to the app
-      retry: 2, // Retry failed queries twice
-      refetchInterval: 5000, // Refetch every 5 seconds
-      refetchIntervalInBackground: true, // Refetch even when the tab is in the background
-    },
-  },
-});
+const queryClient = new QueryClient();
+// const queryClient = new QueryClient({
+//   defaultOptions: {
+//     queries: {
+//       refetchOnWindowFocus: true, // Still refetch when coming back to the app
+//       retry: 2, // Retry failed queries twice
+//       refetchInterval: 5000, // Refetch every 5 seconds
+//       refetchIntervalInBackground: true, // Refetch even when the tab is in the background
+//     },
+//   },
+// });
 
 // PrivateRoute component.This will guard routes that require authentication.
 /**
