@@ -17,6 +17,8 @@ import { selectUserToken } from "../../store/apiData/users/users.selector";
 import { createExpense } from "../../api_layer/actuals/createExpenseApi";
 import { selectActualApiIncomes, selectActualApiIncomeTotalByDate } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
 import { selectActualApiTransaction, selectActualApiTransactionTotalByDate } from "../../store/apiData/actualTransaction/actualAPITransaction.selector";
+import { deleteActualIncome1 } from "../../api_layer/actuals/deleteActualApiIncome";
+import { deleteActualExpense1 } from "../../api_layer/actuals/deleteActualApiTransaction";
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
 // let expenseIdCounter= 0;
@@ -394,12 +396,44 @@ const actualExpenseMutation = useMutation(createExpense, {
  //console.log(incomeIdCounter)
 
  //remove item from budget upon click of the red circle.
+ const { mutate: deleteActualIncomeMutation } = useMutation(deleteActualIncome1, {
+  onSuccess: (data) => {
+    console.log("Actual Income deleted successfully:", data);
+    //queryClient.invalidateQueries("actual_incomes"); // Refetch updated data
+  },
+  onError: (error) => {
+    console.error(
+      "Error deleting actual income:",
+      error.response?.data || error.message
+    );
+  },
+});
+
+const { mutate: deleteActualExpenseMutation } = useMutation(deleteActualExpense1, {
+  onSuccess: (data) => {
+    console.log("Actual Expense deleted successfully:", data);
+    //queryClient.invalidateQueries("actual_transactions"); // Refetch updated data
+  },
+  onError: (error) => {
+    console.error(
+      "Error deleting actual expense:",
+      error.response?.data || error.message
+    );
+  },
+});
+
+// Function to handle item removal
+
+
+
  const handleRemoveIncome = (id) => {
   dispatch(removeIncomeItemFromActual(id));
+  deleteActualIncomeMutation({ incId: id, token }); // Use correct mutation hook
 };
 
 const handleRemoveExpense = (id) => {
   dispatch(removeItemFromActual(id));
+ deleteActualExpenseMutation({ expId: id, token }); // Use correct mutation hook
 };
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
