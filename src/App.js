@@ -93,10 +93,10 @@ function App() {
   {/* All other routes are protected */}
   <Route path="/" element={<PrivateRoute>
   {/* fetch data here */}
-  {/* <ActualIncomeFetcher/>
+  <ActualIncomeFetcher/>
   <BudgetTransactionFetcher/>
    <ActualTransactionFetcher/>
-    <BudgetIncomeFetcher/>   */}
+    <BudgetIncomeFetcher/>  
     <Navigation /></PrivateRoute>} >
  {/* Define child routes under the protected area */}
 <Route path='budget' element={<MyBudgetScreen/>}/>
