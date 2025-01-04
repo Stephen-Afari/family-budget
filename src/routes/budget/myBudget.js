@@ -13,13 +13,15 @@ import { selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.s
 import { selectBudgettransactionByDate, selectBudgettransactions, selectExpenseTotalByDate} from "../../store/budgetTransactions/budgetTransactions.selector";
 import { selectBudgetincomes } from "../../store/budgetIncome/budgetIncome.selector";
 import { parents, parents_inc, subGroups, subGroups_inc } from "../../components/common/parents_subgroups";
-import { useMutation } from "react-query";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
 import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpense";
 import { createBudgetIncome } from "../../api_layer/budget/createBudgetApiIncome";
 import { selectUserToken } from "../../store/apiData/users/users.selector";
 
 import { selectBudgetApiIncomes, selectBudgetApiIncomeTotalByDate } from "../../store/apiData/budgetIncome/budgetAPIIncome.selector";
 import { selectBudgetApiTransaction, selectBudgetApiTransactionTotalByDate } from "../../store/apiData/budgetTransaction/budgetAPITransaction.selectors";
+import { deleteBudgetIncome } from "../../api_layer/budget/deleteBudgetApiIncome";
+import { deleteBudgetExpense } from "../../api_layer/budget/deleteBudgetApiTransaction";
 
 //Initializing the idCounter variable in the global scope ensures that it persists across multiple renders and re-renders of the React component. This way, the counter continues to increment without resetting every time the component is re-rendered.
 //If you initialize idCounter inside the component, it would reset to its initial value every time the component re-renders, which would prevent you from maintaining unique IDs.
@@ -338,6 +340,7 @@ return(
     const dispatch = useDispatch();
  //Get the token
  const token = useSelector(selectUserToken);
+ const queryClient = useQueryClient();
  //const BudgIncomeTest = useSelector(selectBudgetApiIncomes)
  //console.log(BudgIncomeTest)
 // const [isReady, setIsReady] = useState(false); // Local state to manage readiness
@@ -367,7 +370,7 @@ return(
       const totalExpense = useSelector((state)=>selectBudgetApiTransactionTotalByDate
       (selectedDate)(state));
  // const totalIncome = useSelector(selectIncomeTotal);
- 
+//console.log(myBudgetTransaction); 
 
 
  ////////////MODAL DETAILS///////////////////////////////
@@ -595,15 +598,87 @@ const budgetExpenseMutation = useMutation(createBudgetExpense, {
     
 //  };
 //////////////////////SEND DATA TO DATABASE/////////////////////////////////////
+ //Create a mutation for deletion
+ //////////////////////SEND DATA TO DATABASE/////////////////////////////////
+ ////Create mutation for Budget Income using React Query
+//  const { mutate: deleteBudgetIncome } = useMutation(deleteBudgetIncome, {
+//   onSuccess: (data) => {
+//     //console.log("Budget Income data posted", data.data);
+//     console.log("Budget Income deleted successfully:", data);
+//     QueryClient.invalidateQueries('budget_incomes'); // Refetch updated data
+//   },
+//   onError: (error) => {
+//     console.error("Error creating budget income:", error.response?.data || error.message);
+//   },
+// });
 
-//remove item from budget upon click of the red circle.
-const removeFromBudget =(id)=>{
-if(modalHeader==='Add Expense'){
-  dispatch(removeItemFromBudget(id))
-}else{
-  dispatch(removeIncomeItemFromBudget(id))
-}
- }
+//  ////Create mutation for Budget Expense using React Query
+//  const { mutate: deleteBudgetExpense } = useMutation(deleteBudgetExpense, {
+//   onSuccess: (data) => {
+//     //console.log("Budget Income data posted", data.data);
+//     console.log("Budget Income deleted successfully:", data);
+//     QueryClient.invalidateQueries('budget_transactions'); // Refetch updated data
+//   },
+//   onError: (error) => {
+//     console.error("Error creating budget income:", error.response?.data || error.message);
+//   },
+// });
+
+
+
+// //remove item from budget upon click of the red circle.
+// const removeFromBudget =(id)=>{
+// if(modalHeader==='Add Expense'){
+//   dispatch(removeItemFromBudget(id))
+//   deleteBudgetExpense({expId:id, token})
+// }else{
+//   dispatch(removeIncomeItemFromBudget(id))
+//   deleteBudgetIncome({incId:id,token})
+// }
+//  }
+// Create mutation for Budget Income using React Query
+// Import your actual mutation functions
+// import { deleteBudgetIncome, deleteBudgetExpense } from './apiFunctions'; (Example)
+
+const { mutate: deleteBudgetIncomeMutation } = useMutation(deleteBudgetIncome, {
+  onSuccess: (data) => {
+    console.log("Budget Income deleted successfully:", data);
+    //queryClient.invalidateQueries("budget_incomes"); // Refetch updated data
+  },
+  onError: (error) => {
+    console.error(
+      "Error deleting budget income:",
+      error.response?.data || error.message
+    );
+  },
+});
+
+const { mutate: deleteBudgetExpenseMutation } = useMutation(deleteBudgetExpense, {
+  onSuccess: (data) => {
+    console.log("Budget Expense deleted successfully:", data);
+    //queryClient.invalidateQueries("budget_transactions"); // Refetch updated data
+  },
+  onError: (error) => {
+    console.error(
+      "Error deleting budget expense:",
+      error.response?.data || error.message
+    );
+  },
+});
+
+// Function to handle item removal
+const removeFromBudget = (id, type) => {
+  if (type === "expense") {
+    dispatch(removeItemFromBudget(id));
+    deleteBudgetExpenseMutation({ expId: id, token }); // Use correct mutation hook
+  } else if(type==='income') {
+    dispatch(removeIncomeItemFromBudget(id));
+    console.log(id);
+    deleteBudgetIncomeMutation({ incId: id, token }); // Use correct mutation hook
+  }
+};
+
+
 
 // //filtering to show data for the selected date only 
 const filteredTransactions = selectedDate ?
@@ -654,7 +729,7 @@ myBudgetTransaction.filter((transaction)=>{
       filteredIncome.map((income)=>(
        <TableRow1 key={income.id}>
         
-       <TableData><RemoveSymbol onClick={()=>removeFromBudget(income.id)}/>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
+       <TableData><RemoveSymbol onClick={()=>removeFromBudget(income.id,"income")}/>{income.parent.charAt(0).toUpperCase()+income.parent.substring(1)}</TableData>
       
        <TableData>{formatCurrency(income.amount)}</TableData>
       
@@ -686,7 +761,7 @@ myBudgetTransaction.filter((transaction)=>{
       (filteredTransactions.map((transaction)=>(
         <TableRow1 key={transaction.id}>
           
-       <TableData><RemoveSymbol onClick={()=>removeFromBudget(transaction.id)}/>{transaction.parent.slice(0,1).toUpperCase()+transaction.parent.slice(1).toLowerCase()}</TableData>
+       <TableData><RemoveSymbol onClick={()=>removeFromBudget(transaction.id,"expense")}/>{transaction.parent.slice(0,1).toUpperCase()+transaction.parent.slice(1).toLowerCase()}</TableData>
       
        
        <TableData>{formatCurrency(transaction.amount)}</TableData>

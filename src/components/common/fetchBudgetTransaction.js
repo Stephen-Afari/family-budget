@@ -18,6 +18,9 @@ const {
   } = useQuery("budget_transactions", ()=> fetchAllBudgetTransactions(token), //Pass a function that React Query will execute when `isReady`
   {
     //enabled: isReady, // Only run query if token is available
+    staleTime: Infinity, // Data is always fresh (no refetching)
+    cacheTime: 10 * 60 * 1000, // Keep cached data for 10 minutes
+    refetchOnWindowFocus: false, // Do not refetch on window focus
     onSuccess: (data)=>{
         // Dispatch Redux action to update the reducer
         

@@ -355,13 +355,13 @@ useEffect(()=>{
     setExpenseIdCounter(expenseIdCounter + 1)
     dispatch(addItemToActual({...data, id:newId}));
     actualExpenseMutation.mutate({ expenseData: data, token });
-    console.log(data)
+   // console.log(data)
   } else{
     let newId = incomeIdCounter;
     setIncomeIdCounter(incomeIdCounter + 1)
     dispatch(addIncomeItemToActual({...data, id:newId}));
     actualIncomeMutation.mutate({ incData: data, token });
-    console.log(data)
+   // console.log(data)
   }
   handleCloseModal(); // Close modal after submitting
  };
@@ -372,7 +372,7 @@ useEffect(()=>{
  ////Create mutation for Budget Income using React Query
  const actualIncomeMutation = useMutation(createIncome, {
   onSuccess: (data) => {
-    console.log("Budget Income data posted", data.data);
+    //console.log("Budget Income data posted", data.data);
   },
   onError: (error) => {
     console.error("Error creating actual income:", error.response?.data || error.message);
@@ -382,7 +382,7 @@ useEffect(()=>{
 //Budget Expense
 const actualExpenseMutation = useMutation(createExpense, {
   onSuccess: (data) => {
-    console.log("Budget Expense data posted", data.data);
+    //console.log("Budget Expense data posted", data.data);
   },
   onError: (error) => {
     console.error("Error creating actual expense:", error.response?.data || error.message);
