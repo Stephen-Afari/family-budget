@@ -76,7 +76,7 @@ const MiniNavbar =({selectProp})=>{
  const myActualTransaction = useSelector(selectActualApiTransaction) || [];
  const totalIncome = useSelector((state)=>selectActualApiIncomeTotalByDate(selectProp)(state));
  const totalExpense = useSelector((state)=>selectActualApiTransactionTotalByDate(selectProp)(state))
-//console.log('actual_Api_Incomes',myActualIncome1);
+console.log('actual_Api_Incomes',myActualIncome);
 //filter inc
 let filteredInc = selectProp ? 
 myActualIncome.filter((inc)=>{
@@ -353,15 +353,15 @@ useEffect(()=>{
    //setCollectedData(dataWithId);
 
   if(modalHeader==='Add Expense'){
-    let newId=expenseIdCounter;
-    setExpenseIdCounter(expenseIdCounter + 1)
-    dispatch(addItemToActual({...data, id:newId}));
+    // let newId=expenseIdCounter;
+    // setExpenseIdCounter(expenseIdCounter + 1)
+    // dispatch(addItemToActual({...data, id:newId}));
     actualExpenseMutation.mutate({ expenseData: data, token });
    // console.log(data)
   } else{
-    let newId = incomeIdCounter;
-    setIncomeIdCounter(incomeIdCounter + 1)
-    dispatch(addIncomeItemToActual({...data, id:newId}));
+    // let newId = incomeIdCounter;
+    // setIncomeIdCounter(incomeIdCounter + 1)
+    // dispatch(addIncomeItemToActual({...data, id:newId}));
     actualIncomeMutation.mutate({ incData: data, token });
    // console.log(data)
   }
