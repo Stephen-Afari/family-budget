@@ -34,16 +34,16 @@ function App() {
 
   useEffect(() => {
     // // Clear token on page reload
-    // const clearTokenOnReload = () => {
+     const clearTokenOnReload = () => {
       dispatch(logoutUser()); // Clear Redux state
-    // };
+     };
 
-    // window.addEventListener("beforeunload", clearTokenOnReload);
+    window.addEventListener("beforeunload", clearTokenOnReload);
 
-    // return () => {
+     return () => {
     //   // Cleanup event listener
-    //   window.removeEventListener("beforeunload", clearTokenOnReload);
-    // };
+       window.removeEventListener("beforeunload", clearTokenOnReload);
+    };
   }, [dispatch]);
 
   return (

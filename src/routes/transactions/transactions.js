@@ -76,7 +76,7 @@ const MiniNavbar =({selectProp})=>{
  const myActualTransaction = useSelector(selectActualApiTransaction) || [];
  const totalIncome = useSelector((state)=>selectActualApiIncomeTotalByDate(selectProp)(state));
  const totalExpense = useSelector((state)=>selectActualApiTransactionTotalByDate(selectProp)(state))
-console.log('actual_Api_Incomes',myActualIncome);
+//console.log('actual_Api_Incomes',myActualIncome);
 //filter inc
 let filteredInc = selectProp ? 
 myActualIncome.filter((inc)=>{
