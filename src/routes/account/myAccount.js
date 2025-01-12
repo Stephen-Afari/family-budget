@@ -1,6 +1,6 @@
 import { SplitScreen } from "../../components/splitScreen/splitScreen";
 import { IoReorderFourSharp } from "react-icons/io5";
-import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, TableBodyContainer, TableBodyContainerExp, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
+import { AccountHeader,AccountIconContainer, Dropdown, DropdownContainer, MonthDropdown, MyExpenseTable, MyIncomeTable, MyTable, RefreshButton, TableBodyContainer, TableBodyContainerExp, TableContainer, TableData, TableData1, TableDataProps, TableDataVarPcnt, TableHead, TableRow, TableRow1, YearDropdown } from "./myAccount.styles";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import combinedFilteredItems from "../../components/common/combineFIlters";
@@ -9,7 +9,7 @@ import { selectActualExpenseTotalByDate, selectActualExpenseTotalByYearAndMonth,
 import { selectBudgetincomes, selectBudgetIncomeTotalByYearAndMonth, selectIncomeTotalByDate } from "../../store/budgetIncome/budgetIncome.selector";
 import { selectBudgettransactions, selectExpenseTotalByDate, selectExpenseTotalByYearAndMonth } from "../../store/budgetTransactions/budgetTransactions.selector";
 import { years,months } from "../../components/common/periods";
-import { useQuery } from "react-query";
+import { QueryCache, QueryClient, useQuery, useQueryClient } from "react-query";
 import { setActualApiIncomes } from "../../store/apiData/actualIncome/actualAPIIncome.reducer";
 import { fetchAllActualIncomes } from "../../api_layer/actuals/actualIncomeApi";
 import { selectActualApiIncomes, selectActualApiIncomeTotalByYearAndMonth } from "../../store/apiData/actualIncome/actualAPIIncome.selector";
@@ -58,6 +58,7 @@ const formatPercentage = (value, locale = 'en-US') => {
 //  },[token]);
 
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
     //Selecting API data
     // const actualApiIncomes= useSelector(selectActualApiIncomes);
     // const actualApiTransaction = useSelector(selectActualApiTransaction);
@@ -228,9 +229,19 @@ const totalActExpense= useSelector((state)=>selectActualApiTransactionTotalByYea
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
+
+const fetchAllData = () => {
+  queryClient.refetchQueries("actual_incomes");
+  queryClient.refetchQueries("budget_transactions");
+  queryClient.refetchQueries("actual_transactions");
+  queryClient.refetchQueries("budget_incomes");
+
+  console.log("All data refetched!");
+};
     return(
       <>
      <AccountHeader><AccountIconContainer><IoReorderFourSharp /> </AccountIconContainer>Budget vs Actual</AccountHeader>
+     <RefreshButton onClick={fetchAllData}>Refresh</RefreshButton>
       <DropdownContainer>
         <YearDropdown value={selectedYear} onChange={(e)=>setSelectedYear(parseInt(e.target.value))}>
         {years.map((year)=>(

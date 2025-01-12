@@ -4,6 +4,15 @@ export const AccountHeader = styled.h4`
 display: flex;
 margin-top: 2px;
 `
+export const RefreshButton = styled.button`
+diplay: flex;
+height:30px;
+width: 100px;
+margin-left: 450px;
+border-radius: 10px;
+cursor: pointer;
+
+`
 export const AccountIconContainer = styled.div`
 margin-top: 2px;
 `
@@ -158,7 +167,7 @@ font-size:13px;
 `
 
 export const TableDataVarPcnt = styled.td`
-color: ${(props)=> props.varpcnt > 0 ? 'green':'red'};
+color: ${(props)=> {if(isNaN(props.varpcnt)){return 'gray' }   return props.varpcnt > 0 ? 'green':'red'}};
 font-style: italic;
 font-size:13px;
 // padding: 10px;

@@ -10,7 +10,7 @@ import { addIncomeItemToActual, removeIncomeItemFromActual } from "../../store/a
 import { selectActualExpenseTotalByDate, selectActualtransactions } from "../../store/actualTransactions/actualTransactions.selector";
 import { addItemToActual, removeItemFromActual } from "../../store/actualTransactions/actualTransactions.reducer";
 import { subGroups,parents, subGroups_inc, parents_inc } from "../../components/common/parents_subgroups";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { createBudgetExpense } from "../../api_layer/budget/createBudgetApiExpense";
 import { createIncome } from "../../api_layer/actuals/createIncomeApi";
 import { selectUserToken } from "../../store/apiData/users/users.selector";
@@ -291,6 +291,7 @@ return(
     const [selectedDate, setSelectedDate]= useState(null);
     const token = useSelector(selectUserToken);
     const dispatch = useDispatch();
+    const queryClient = useQueryClient();
  
     //interact with the data from the reducer
 // const myBudgetTransaction = useSelector(selectBudgettransactions) || [];
@@ -437,6 +438,15 @@ const handleRemoveExpense = (id) => {
 };
  //////////////////////SEND DATA TO REDUCER///////////////////////////////
 
+ ///handleDateChange Function: The function provided to the onChange prop will automatically receive the selected date.
+
+//  const handleDateChange = (date) => {
+//   setSelectedDate(date); // Update selected date
+//   queryClient.refetchQueries(["actual_transactions", date]); // Manually refetch data
+// };
+
+
+//
     return(
       <>
       <ActualHeaderContainer>
@@ -444,7 +454,10 @@ const handleRemoveExpense = (id) => {
      <TransactionHeader><TransactionIconContainer><IoReorderFourSharp /> </TransactionIconContainer>Transaction</TransactionHeader>
      <DatePickerContainer>
         <GlobalStyle/>
-      <DatePicker selected={selectedDate} onChange={(selectedDate)=>setSelectedDate(selectedDate)}  dateFormat="MMMM-d-yyyy"
+        
+      {/* <DatePicker selected={selectedDate} onChange={handleDateChange}  dateFormat="MMMM-d-yyyy"
+          placeholderText="Select a date"/></DatePickerContainer>  */}
+       <DatePicker selected={selectedDate} onChange={(selectedDate)=>setSelectedDate(selectedDate)}  dateFormat="MMMM-d-yyyy"
           placeholderText="Select a date"/></DatePickerContainer>
       </ActualHeaderLeft>
       <NetIcomeComponent
