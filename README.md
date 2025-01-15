@@ -1,70 +1,182 @@
-# Getting Started with Create React App
+Family Budget Tracker
+A full-stack web application for tracking and managing family budgets, incomes, and expenses. The app is built using React (frontend) and Node.js with Express (backend). The backend connects to a MongoDB database to store and retrieve financial data.
+________________________________________
+Features
+•	User authentication and authorization.
+•	Track actual incomes and expenses.
+•	Plan and compare budgeted vs. actual transactions.
+•	Dynamic data visualization using charts.
+•	Export data for analysis.
+•	Responsive design for better user experience.
+•	Secure backend with JWT authentication and rate-limiting.
+________________________________________
+Technologies Used
+Frontend
+•	React
+•	React Query
+•	Redux Toolkit
+•	Styled Components
+•	React Router
+•	Recharts for data visualization
+Backend
+•	Node.js
+•	Express
+•	MongoDB (via Mongoose)
+•	JWT Authentication
+•	Helmet, CORS, XSS Protection
+•	Express-rate-limit for rate limiting
+________________________________________
+Installation
+Prerequisites
+•	Node.js (v14+)
+•	MongoDB (local or cloud-based)
+•	Git
+Clone the Repository
+bash
+Copy code
+git clone https://github.com/your-username/family-budget-tracker.git
+cd family-budget-tracker
+________________________________________
+Backend Setup
+1.	Navigate to the backend folder:
+bash
+Copy code
+cd family-budget-backend
+2.	Install dependencies:
+bash
+Copy code
+npm install
+3.	Environment Variables: Create a .env file in the root of the backend folder and configure the following:
+env
+Copy code
+PORT=5000
+DATABASE=mongodb+srv://<username>:<password>@cluster.mongodb.net/family-budget
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=90d
+4.	Run the backend server:
+bash
+Copy code
+npm start
+________________________________________
+Frontend Setup
+1.	Navigate to the frontend folder:
+bash
+Copy code
+cd family-budget-frontend
+2.	Install dependencies:
+bash
+Copy code
+npm install
+3.	Environment Variables: Create a .env file in the frontend folder and configure the backend URL:
+env
+Copy code
+REACT_APP_API_URL=https://family-budget-backend.onrender.com/api/v1
+4.	Run the frontend:
+bash
+Copy code
+npm start
+________________________________________
+Usage
+1.	Login or Signup as a new user.
+2.	Add actual income and transactions.
+3.	Set up planned budgets and compare them with actual data.
+4.	View data through interactive charts and visualizations.
+5.	Export data to an Excel file for offline analysis.
+________________________________________
+API Endpoints
+Authentication
+•	POST /api/v1/users/login - User login.
+•	POST /api/v1/users/signup - User signup.
+Actual Data
+•	GET /api/v1/actincome - Fetch all actual incomes.
+•	GET /api/v1/acttrxn - Fetch all actual transactions.
+Budgeted Data
+•	GET /api/v1/budginc - Fetch all budgeted incomes.
+•	GET /api/v1/budgtrxn - Fetch all budgeted transactions.
+CRUD Operations
+•	POST, PATCH, DELETE for incomes and transactions.
+________________________________________
+Code Highlights
+Frontend
+React Query for Fetching Data
+javascript
+Copy code
+const { data, isLoading } = useQuery("actual_incomes", () => fetchAllActualIncomes(token), {
+  onSuccess: (data) => {
+    dispatch(setActualApiIncomes(data.data.data));
+  },
+});
+Redux for State Management
+javascript
+Copy code
+export const USERS_INITIAL_STATE = {
+  users: {},
+  token: localStorage.getItem("token") || null,
+  loading: false,
+  error: null,
+};
+Backend
+JWT Authentication Middleware
+javascript
+Copy code
+const protect = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
+  if (!token) return next(new AppError("Unauthorized", 401));
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = await User.findById(decoded.id);
+  next();
+};
+Rate Limiting
+javascript
+Copy code
+const limiter = rateLimit({
+  max: 5000,
+  windowMs: 60 * 60 * 1000,
+  message: "Too many requests from this IP, please try again in an hour!",
+});
+app.use("/api", limiter);
+________________________________________
+Troubleshooting
+•	CORS Errors: Ensure the backend includes the following:
+javascript
+Copy code
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://family-budget-backend.onrender.com/api/v1/' // Deployed frontend on Render.com
+];
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true); // Allow the origin
+    } else {
+      callback(new Error('Not allowed by CORS')); 
+    }
+  },
+  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'], 
+  credentials: true // Allow cookies and credentials
+}));
+•	Too Many Requests: Adjust the max value in the rate limiter.
+________________________________________
+Contributing
+1.	Fork the repository.
+2.	Create a new branch:
+bash
+Copy code
+git checkout -b feature/your-feature
+3.	Commit your changes:
+bash
+Copy code
+git commit -m "Add new feature"
+4.	Push to the branch:
+bash
+Copy code
+git push origin feature/your-feature
+5.	Open a pull request.
+________________________________________
 
-## Available Scripts
 
-In the project directory, you can run:
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
