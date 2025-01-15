@@ -1,4 +1,4 @@
-Family Budget Tracker
+**Family Budget Tracker**:
 A full-stack web application for tracking and managing family budgets, incomes, and expenses. The app is built using React (frontend) and Node.js with Express (backend). The backend connects to a MongoDB database to store and retrieve financial data.
 ________________________________________
 Features
