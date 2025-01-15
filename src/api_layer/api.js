@@ -3,7 +3,7 @@ import axios from "axios";
 const axiosParams = {
   // Base URL should be set via environment
   baseURL:
-    process.env.NODE_ENV === "development" ? "https://family-budget-backend.onrender.com/api/v1/" : "https://family-budget-backend.onrender.com/api/v1/",
+    process.env.NODE_ENV === "development" ? "http://localhost:5000/api/v1/" : "https://family-budget-backend.onrender.com/api/v1/",
  
     //process.env.NODE_ENV === "development" ? "http://localhost:5000/api/v1/" : "https://family-budget-backend.onrender.com",
     //https://family-budget-backend.onrender.com

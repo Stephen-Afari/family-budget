@@ -241,7 +241,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
        
         <PieChartContainer>
          
-        <div style={{ width: '100%', height: 244 }}>
+        <div style={{ width: '100%', height: 340 }}>
         <PieChartHeader>Planned Expense</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -267,7 +267,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
         </ResponsiveContainer>
       </div>
 
-      <div style={{ width: '100%', height:244 }}>
+      <div style={{ width: '100%', height:390 }}>
         <PieChartHeader>Planned Expense Detail</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -292,7 +292,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <div style={{ width: '100%', height: 244}}>
+      <div style={{ width: '100%', height: 280}}>
       <PieChartHeader>Actual Expense</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>
@@ -318,7 +318,7 @@ let chartDataPlan= chartDataDisplay(filteredPlanIncomes);
         </ResponsiveContainer>
       </div>
 
-      <div style={{ width: '100%', height: 244 }}>
+      <div style={{ width: '100%', height: 270 }}>
       <PieChartHeader>Actual Expense Detail</PieChartHeader>
         <ResponsiveContainer>
           <PieChart>

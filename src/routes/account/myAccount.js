@@ -152,6 +152,8 @@ const totalPlanIncome = useSelector((state)=>selectBudgetApiIncomeTotalByYearAnd
 const totalActIncome = useSelector((state)=>selectActualApiIncomeTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
 const totalActExpense= useSelector((state)=>selectActualApiTransactionTotalByYearAndMonth(selectedYear, selectedMonth,months)(state));
 
+//console.log(totalActExpense, totalActIncome);
+
 //  //Combining the Arrays for the Budget--returns an array of objects , map returns an array which also returns an inner object.
 
 // //Flattening a result typically means taking a nested structure and reducing it to a simpler, one-level structure. In the context of arrays, it means converting an array of arrays into a single array that contains all the elements of the nested arrays.
@@ -229,6 +231,8 @@ const totalActExpense= useSelector((state)=>selectActualApiTransactionTotalByYea
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
 //console.log(combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense))
+// console.log(totalActExpense)
+// console.log(filteredActualTransactions)
 
 const fetchAllData = () => {
   queryClient.refetchQueries("actual_incomes");
@@ -305,8 +309,8 @@ const fetchAllData = () => {
             </TableRow>
           </thead>
           <TableBodyContainerExp>
-            {combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).length > 0 ? (
-              combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActExpense).map((transaction,index) => (
+            {combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActIncome).length > 0 ? (
+              combinedFilteredItems(filteredPlanTransactions,filteredActualTransactions,totalPlanExpense,totalActIncome).map((transaction,index) => (
                 <TableRow1 key={index}>
                   <TableData>{transaction.actualParent.charAt(0).toUpperCase()+transaction.actualParent.substring(1) || transaction.planParent.charAt(0).toUpperCase()+transaction.planParent.substring(1)}</TableData>
                   <TableData>{formatCurrency(transaction.planAmount)}</TableData>

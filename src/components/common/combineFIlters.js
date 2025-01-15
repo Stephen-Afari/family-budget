@@ -128,7 +128,7 @@ const combinedFilteredItems = (planInc, actualInc, totalPlanIncome, totalActInco
   const combinedItems = Object.keys(planItemsMap).flatMap((parent) => {
     const planAmount = planItemsMap[parent].amount || 0;
     const actualAmount = actualItemsMap[parent]?.amount || 0;
-
+//console.log(actualAmount,totalActIncome)
     return [{
       planParent: parent,
       planAmount: planAmount,

@@ -11,6 +11,9 @@ import { CiLogin } from "react-icons/ci";
 import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
+import { logoutUser } from "../../../store/apiData/users/users.reducer";
+import { useQuery, useQueryClient } from "react-query";
+import { useDispatch } from "react-redux";
 // import { fetchAllActualIncomes, useToken } from "../../../api_layer/actuals/actualIncomeApi";
 // import { useQuery } from "react-query";
 //import { useDispatch } from "react-redux";
@@ -48,6 +51,8 @@ export const Navigation=()=>{
 //       //console.log('myTokenTest-', userToken)
 //  // State to keep track of the selected item    
  const [selectedItem, setSelectedItem] = useState(null);
+  const queryClient = useQueryClient();
+  const dispatch = useDispatch();
   
 //  //Test the API Layer
 // // Test the API layer and Redux state changes
@@ -107,6 +112,11 @@ const getItemProp =(id)=>{
     return selectedItem === id ? "true": "false";
 }
 
+const handleLogout = () => {
+    handleItemClick('7')
+    dispatch(logoutUser()); // Clear Redux state (token, user data)
+    queryClient.clear(); // Clear all React Query cached data
+  };
 
     return(
         <Fragment>
@@ -126,7 +136,7 @@ const getItemProp =(id)=>{
 <NavLinks to='/investment' isselected={getItemProp('4')} onClick={()=>handleItemClick('4')}><IconWrapper><RiRefund2Fill /> </IconWrapper>Investment</NavLinks>
 {/* <NavLinks to='/insight' isselected={getItemProp('5')} onClick={()=>handleItemClick('5')}><IconWrapper><GiArtificialIntelligence /> </IconWrapper>Insight</NavLinks> */}
 <NavLinks to='/export' isselected={getItemProp('6')} onClick={()=>handleItemClick('6')}><IconWrapper><CiExport /> </IconWrapper>Export</NavLinks>
-<NavLinks to='/logIn' isselected={getItemProp('7')} onClick={()=>handleItemClick('7')}><IconWrapper><CiLogin /> </IconWrapper>LogOut</NavLinks>
+<NavLinks to='/logIn' isselected={getItemProp('7')} onClick={handleLogout}><IconWrapper><CiLogin /> </IconWrapper>LogOut</NavLinks>
  </NavContainer>
     <OutletData>
     <Outlet/>

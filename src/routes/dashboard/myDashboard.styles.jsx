@@ -35,7 +35,7 @@ font: 20px;
 font-style: italic;
 font-weight: bold;
 margin-bottom: 20px;
-margin-top: 5px;
+margin-top: 1px;
 
 `
 export const BarChartHeader=styled.div`
